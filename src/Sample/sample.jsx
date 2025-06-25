@@ -27,6 +27,7 @@ class Sample extends React.Component {
         { id: 2, cName: "Madurai" },
         { id: 3, cName: "Dindigul" },
         { id: 4, cName: "Theni" },
+        { id: 5, cName: "Nellai" },
       ],
       genderRb: ["Male", "Female", "others"],
       errors: {
