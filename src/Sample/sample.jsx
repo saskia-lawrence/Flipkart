@@ -40,7 +40,7 @@ class Sample extends React.Component {
         city: false,
         dob: false,
         gender: false,
-      }
+      },
     };
   }
 
@@ -86,58 +86,61 @@ class Sample extends React.Component {
 
   handleBlur = (field) => {
     this.setState({
-      touched: { ...this.state.touched, [field]: true }
+      touched: { ...this.state.touched, [field]: true },
     });
     this.validate();
   };
 
   btnHandler = (e) => {
     e.preventDefault();
-    
+
     // Mark all fields as touched to show all errors
-    this.setState({
-      touched: {
-        name: true,
-        city: true,
-        dob: true,
-        gender: true
-      }
-    }, () => {
-      if (this.validate()) {
-        this.setState({
-          snackbar: {
-            open: true,
-            message: "Form submitted successfully!",
-            severity: "success",
-          },
-          name: "",
-          city: "",
-          dob: null,
-          gender: "",
-          isActive: false,
-          errors: {
+    this.setState(
+      {
+        touched: {
+          name: true,
+          city: true,
+          dob: true,
+          gender: true,
+        },
+      },
+      () => {
+        if (this.validate()) {
+          this.setState({
+            snackbar: {
+              open: true,
+              message: "Form submitted successfully!",
+              severity: "success",
+            },
             name: "",
             city: "",
-            dob: "",
+            dob: null,
             gender: "",
-          },
-          touched: {
-            name: false,
-            city: false,
-            dob: false,
-            gender: false,
-          }
-        });
-      } else {
-        this.setState({
-          snackbar: {
-            open: true,
-            message: "Please fix the errors in the form",
-            severity: "error",
-          }
-        });
+            isActive: false,
+            errors: {
+              name: "",
+              city: "",
+              dob: "",
+              gender: "",
+            },
+            touched: {
+              name: false,
+              city: false,
+              dob: false,
+              gender: false,
+            },
+          });
+        } else {
+          this.setState({
+            snackbar: {
+              open: true,
+              message: "Please fix the errors in the form",
+              severity: "error",
+            },
+          });
+        }
       }
-    });
+    );
   };
 
   render() {
@@ -225,8 +228,12 @@ class Sample extends React.Component {
                   value={this.state.gender}
                   onChange={(e) => this.setState({ gender: e.target.value })}
                   onBlur={() => this.handleBlur("gender")}
-                  error={this.state.touched.gender && !!this.state.errors.gender}
-                  helperText={this.state.touched.gender && this.state.errors.gender}
+                  error={
+                    this.state.touched.gender && !!this.state.errors.gender
+                  }
+                  helperText={
+                    this.state.touched.gender && this.state.errors.gender
+                  }
                   options={genderOptions}
                 />
               </Grid>
