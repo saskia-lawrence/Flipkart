@@ -1,5 +1,10 @@
 export const lable = {
   required: "Required",
+  mainheader: "mainheader",
+  subheading: "subheading",
+  label: "label",
+  value: "value",
+  error: "error",
   severity: {
     error: "error",
     success: "success",
@@ -38,13 +43,7 @@ export const lable = {
       newCustomer: "New customer registered",
     },
   },
-  common: {
-    required: "Required",
-    severity: {
-      error: "error",
-      success: "success",
-    },
-  },
+
   otpVerification: {
     title: "Verification Code",
     message: "We have sent the verification code to your email address.",

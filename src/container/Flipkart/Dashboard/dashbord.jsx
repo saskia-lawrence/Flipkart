@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {
-  Typography as MuiTypography,
   Box,
   Container,
   Paper,
@@ -13,7 +12,6 @@ import {
   InputAdornment,
   CardMedia,
   CardContent,
-  Button,
   Grid,
 } from "@mui/material";
 import {
@@ -389,11 +387,14 @@ class Dashboard extends React.Component {
             elevation={0}
             sx={{ borderRadius: 2, width: "100%", margin: -1, p: 3 }}
           >
-            <ZTypography variant="h4" fontWeight="bold">
+            <ZTypography
+              flag="mainheader"
+              sx={{ fontWeight: "bold", fontSize: "28px" }}
+            >
               Welcome back,{" "}
               {this.props.location?.state?.user?.username || "Guest"}!
             </ZTypography>
-            <ZTypography variant="body1" color="text.secondary">
+            <ZTypography flag="label">
               Here's what's happening with your store today.
             </ZTypography>
           </Paper>
@@ -425,13 +426,16 @@ class Dashboard extends React.Component {
                 mb: 3,
               }}
             >
-              <MuiTypography variant="h5" sx={{ fontWeight: "bold" }}>
+              <ZTypography
+                flag="subheading"
+                sx={{ fontWeight: "bold", fontSize: "22px" }}
+              >
                 <LocalOffer
                   color="error"
                   sx={{ verticalAlign: "middle", mr: 1 }}
                 />
                 Today's Special Offers
-              </MuiTypography>
+              </ZTypography>
             </Box>
 
             <Slider {...carouselSettings}>
@@ -491,8 +495,8 @@ class Dashboard extends React.Component {
                             mb: 1,
                           }}
                         />
-                        <MuiTypography
-                          variant="h6"
+                        <ZTypography
+                          flag="value"
                           sx={{
                             fontWeight: "bold",
                             mb: 1,
@@ -500,7 +504,7 @@ class Dashboard extends React.Component {
                           }}
                         >
                           {offer.title}
-                        </MuiTypography>
+                        </ZTypography>
                       </Box>
 
                       {/* Bottom Section - Discount and Time */}
@@ -511,25 +515,25 @@ class Dashboard extends React.Component {
                           justifyContent: "space-between",
                         }}
                       >
-                        <MuiTypography
-                          variant="h4"
+                        <ZTypography
+                          flag="subheading"
                           sx={{
                             fontWeight: "bold",
                             color: "#ff5722",
                             lineHeight: 1,
+                            fontSize: "24px",
                           }}
                         >
                           {offer.discount}
-                        </MuiTypography>
-                        <MuiTypography
-                          variant="caption"
+                        </ZTypography>
+                        <ZTypography
+                          flag="label"
                           sx={{
-                            color: "text.secondary",
                             fontWeight: "medium",
                           }}
                         >
                           {offer.timeLeft}
-                        </MuiTypography>
+                        </ZTypography>
                       </Box>
                     </Box>
                   </Card>
@@ -584,7 +588,6 @@ class Dashboard extends React.Component {
                       sx={{
                         height: imageHeight,
                         minWidth: "200px",
-
                         overflow: "hidden",
                       }}
                     >
@@ -633,9 +636,8 @@ class Dashboard extends React.Component {
                         >
                           {category.icon}
                         </Box>
-                        <MuiTypography
-                          variant="subtitle1"
-                          component="h3"
+                        <ZTypography
+                          flag="value"
                           sx={{
                             fontWeight: "bold",
                             overflow: "hidden",
@@ -646,13 +648,12 @@ class Dashboard extends React.Component {
                           }}
                         >
                           {category.name}
-                        </MuiTypography>
+                        </ZTypography>
                       </Box>
 
                       {/* Description */}
-                      <MuiTypography
-                        variant="body2"
-                        color="text.secondary"
+                      <ZTypography
+                        flag="label"
                         sx={{
                           mb: 2,
                           flexGrow: 1,
@@ -664,7 +665,7 @@ class Dashboard extends React.Component {
                         }}
                       >
                         {category.description}
-                      </MuiTypography>
+                      </ZTypography>
                     </CardContent>
 
                     {/* Button section */}
@@ -701,7 +702,10 @@ class Dashboard extends React.Component {
 
           {/* Featured Products Section */}
           <Paper elevation={0} sx={{ p: 3, borderRadius: 2, px: 7 }}>
-            <ZTypography variant="h5" fontWeight="bold" style={{ mb: 3 }}>
+            <ZTypography
+              flag="subheading"
+              sx={{ fontWeight: "bold", fontSize: "22px", mb: 3 }}
+            >
               <Star color="warning" sx={{ verticalAlign: "middle", mr: 1 }} />
               Featured Products
             </ZTypography>
@@ -753,9 +757,8 @@ class Dashboard extends React.Component {
                         p: 2,
                       }}
                     >
-                      <MuiTypography
-                        gutterBottom
-                        variant="subtitle1"
+                      <ZTypography
+                        flag="value"
                         sx={{
                           fontWeight: "bold",
                           overflow: "hidden",
@@ -766,7 +769,7 @@ class Dashboard extends React.Component {
                         }}
                       >
                         {product.name}
-                      </MuiTypography>
+                      </ZTypography>
 
                       {/* Rating */}
                       <Box
@@ -781,9 +784,9 @@ class Dashboard extends React.Component {
                             }
                           />
                         ))}
-                        <MuiTypography variant="caption" sx={{ ml: 1 }}>
+                        <ZTypography flag="label" sx={{ ml: 1 }}>
                           ({Math.floor(Math.random() * 50) + 10})
-                        </MuiTypography>
+                        </ZTypography>
                       </Box>
 
                       {/* Price and button */}
@@ -796,9 +799,12 @@ class Dashboard extends React.Component {
                         }}
                       >
                         <ZTypography
-                          variant="h6"
-                          fontWeight="bold"
-                          style={{ color: "#1976d2" }}
+                          flag="value"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#1976d2",
+                            fontSize: "18px",
+                          }}
                         >
                           ${product.price.toFixed(2)}
                         </ZTypography>

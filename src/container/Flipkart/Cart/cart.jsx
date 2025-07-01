@@ -157,7 +157,10 @@ const Cart = () => {
 
         {cart.length > 0 ? (
           <>
-            <ZTypography variant="h4" sx={{ mb: 4, fontWeight: "bold" }}>
+            <ZTypography
+              flag="mainheader"
+              sx={{ mb: 4, fontWeight: "bold", fontSize: "24px" }}
+            >
               Your Shopping Cart
               <ShoppingBasketIcon sx={{ ml: 2, verticalAlign: "middle" }} />
             </ZTypography>
@@ -166,13 +169,14 @@ const Cart = () => {
               <Box key={category} sx={{ mb: 4 }}>
                 {category && (
                   <ZTypography
-                    variant="h6"
+                    flag="subheading"
                     sx={{
                       mb: 2,
                       fontWeight: "bold",
                       color: "primary.main",
                       textTransform: "uppercase",
                       letterSpacing: "1px",
+                      fontSize: "18px",
                     }}
                   >
                     {category}
@@ -225,15 +229,14 @@ const Cart = () => {
                         <ListItemText
                           primary={
                             <ZTypography
-                              variant="subtitle1"
-                              fontWeight="medium"
-                              sx={{ mb: 1 }}
+                              flag="value"
+                              sx={{ mb: 1, fontWeight: "medium" }}
                             >
                               {item.name}
                             </ZTypography>
                           }
                           secondary={
-                            <ZTypography variant="body2">
+                            <ZTypography flag="label">
                               ${item.price.toFixed(2)}
                             </ZTypography>
                           }
@@ -261,6 +264,7 @@ const Cart = () => {
                             -
                           </ZButton>
                           <ZTypography
+                            flag="value"
                             sx={{ mx: 2, minWidth: 24, textAlign: "center" }}
                           >
                             {item.quantity}
@@ -278,9 +282,13 @@ const Cart = () => {
                             +
                           </ZButton>
                           <ZTypography
-                            variant="body1"
-                            fontWeight="bold"
-                            sx={{ ml: 4, minWidth: 80, textAlign: "right" }}
+                            flag="value"
+                            sx={{
+                              ml: 4,
+                              minWidth: 80,
+                              textAlign: "right",
+                              fontWeight: "bold",
+                            }}
                           >
                             ${(item.price * item.quantity).toFixed(2)}
                           </ZTypography>
@@ -298,8 +306,13 @@ const Cart = () => {
               sx={{ mt: 4, p: 3, border: "1px solid #e0e0e0", borderRadius: 2 }}
             >
               <ZTypography
-                variant="h6"
-                sx={{ mb: 2, fontWeight: "bold", color: "primary.main" }}
+                flag="subheading"
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                  color: "primary.main",
+                  fontSize: "18px",
+                }}
               >
                 Order Summary
               </ZTypography>
@@ -327,26 +340,30 @@ const Cart = () => {
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                <ZTypography variant="body1">
+                <ZTypography flag="label">
                   Subtotal (
                   {cart.reduce((total, item) => total + item.quantity, 0)}{" "}
                   items):
                 </ZTypography>
-                <ZTypography variant="body1" fontWeight="medium">
+                <ZTypography flag="value" sx={{ fontWeight: "medium" }}>
                   ${calculateSubtotal().toFixed(2)}
                 </ZTypography>
               </Box>
 
-              {/* ... other summary elements ... */}
-
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <ZTypography variant="h6" fontWeight="bold">
+                <ZTypography
+                  flag="subheading"
+                  sx={{ fontWeight: "bold", fontSize: "18px" }}
+                >
                   Order Total:
                 </ZTypography>
                 <ZTypography
-                  variant="h6"
-                  fontWeight="bold"
-                  color="primary.main"
+                  flag="subheading"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    fontSize: "18px",
+                  }}
                 >
                   ${calculateSubtotal().toFixed(2)}
                 </ZTypography>
@@ -405,10 +422,13 @@ const Cart = () => {
               alt="Empty cart"
               style={{ width: "300px", maxWidth: "100%" }}
             />
-            <ZTypography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
+            <ZTypography
+              flag="mainheader"
+              sx={{ mb: 2, fontWeight: "bold", fontSize: "24px" }}
+            >
               Your Cart is Empty
             </ZTypography>
-            <ZTypography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            <ZTypography flag="label" sx={{ mb: 4 }}>
               Looks like you haven't added anything to your cart yet.
             </ZTypography>
             <ZButton
@@ -416,7 +436,6 @@ const Cart = () => {
               color="primary"
               size="large"
               onClick={handleContinueShopping}
-              lable="Continue Shopping"
               sx={{ px: 6, py: 1.5, fontWeight: "bold" }}
             >
               Continue Shopping

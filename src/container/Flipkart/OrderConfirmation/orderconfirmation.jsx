@@ -34,7 +34,6 @@ const OrderConfirmation = () => {
     navigate("/dashboard");
   };
 
-  // OrderConfirmation.js - Add this inside the component, before the return statement
   useEffect(() => {
     if (state && state.products && state.products.length > 0) {
       const newOrder = {

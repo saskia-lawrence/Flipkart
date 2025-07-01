@@ -22,7 +22,6 @@ function Routing() {
         <Route path="/otpverification" element={<OtpVerification />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
 
-        {/* Wrap protected routes with PageLayout */}
         <Route element={<PageLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
