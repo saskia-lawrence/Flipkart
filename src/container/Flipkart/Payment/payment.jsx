@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
@@ -19,23 +19,22 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  CircularProgress,
 } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ZTypography from "../../../components/ZTyptography/ztyptography";
 import ZTextField from "../../../components/ZTextFeild/ztextfeild";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
 import ZButton from "../../../components/ZButton/zbutton";
+import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
 
 const steps = ["Order Summary", "Shipping Information", "Payment"];
 
 const Payment = () => {
   const { state } = useLocation();
-  const products = state?.products || [];
-  const fromCart = state?.fromCart || false;
-  const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
-  // Form state
   const [shippingInfo, setShippingInfo] = useState({
     firstName: "",
     lastName: "",
@@ -58,21 +57,71 @@ const Payment = () => {
     payment: {},
   });
 
+  const getCartFromStorage = () => {
+    try {
+      const cartData = localStorage.getItem("cart");
+      if (
+        !cartData ||
+        cartData === "undefined" ||
+        cartData === "null" ||
+        cartData.trim() === ""
+      ) {
+        return [];
+      }
+      const parsed = JSON.parse(cartData);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      console.error("Cart parsing error:", e);
+      return [];
+    }
+  };
+
+  const [products, setProducts] = useState([]);
+  const [fromCart, setFromCart] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const cartProducts = getCartFromStorage();
+
+        if (state?.products) {
+          setProducts(state.products);
+          setFromCart(state.fromCart || false);
+        } else if (cartProducts.length > 0) {
+          setProducts(cartProducts);
+          setFromCart(true);
+        } else {
+          navigate(fromCart ? "/cart" : "/");
+        }
+      } catch (err) {
+        setError("Failed to load cart data");
+        console.error("Initialization error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [state, navigate]);
+
   const calculateTotal = () => {
+    if (!Array.isArray(products)) return 0;
     return products.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => total + (item.price || 0) * (item.quantity || 1),
       0
     );
   };
 
   const handleNext = () => {
     if (validateCurrentStep()) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prev) => prev + 1);
     }
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep((prev) => prev - 1);
   };
 
   const handleBackClick = () => {
@@ -80,11 +129,8 @@ const Payment = () => {
   };
 
   const validateCurrentStep = () => {
-    if (activeStep === 1) {
-      return validateShippingInfo();
-    } else if (activeStep === 2) {
-      return validatePaymentInfo();
-    }
+    if (activeStep === 1) return validateShippingInfo();
+    if (activeStep === 2) return validatePaymentInfo();
     return true;
   };
 
@@ -130,7 +176,7 @@ const Payment = () => {
       isValid = false;
     }
 
-    setErrors({ ...errors, shipping: newErrors });
+    setErrors((prev) => ({ ...prev, shipping: newErrors }));
     return isValid;
   };
 
@@ -167,78 +213,93 @@ const Payment = () => {
       isValid = false;
     }
 
-    setErrors({ ...errors, payment: newErrors });
+    setErrors((prev) => ({ ...prev, payment: newErrors }));
     return isValid;
   };
 
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
-    setShippingInfo({
-      ...shippingInfo,
+    setShippingInfo((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
 
     if (errors.shipping[name]) {
-      setErrors({
-        ...errors,
-        shipping: { ...errors.shipping, [name]: undefined },
-      });
+      setErrors((prev) => ({
+        ...prev,
+        shipping: { ...prev.shipping, [name]: undefined },
+      }));
     }
   };
 
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
 
     if (name === "cardNumber") {
-      const formattedValue =
+      formattedValue =
         value
           .replace(/\s/g, "")
           .match(/.{1,4}/g)
           ?.join(" ")
           .substr(0, 19) || "";
-      setPaymentInfo({
-        ...paymentInfo,
-        [name]: formattedValue,
-      });
     } else if (name === "expiryDate") {
-      const formattedValue = value
+      formattedValue = value
         .replace(/\D/g, "")
         .replace(/^(\d{2})/, "$1/")
         .substr(0, 5);
-      setPaymentInfo({
-        ...paymentInfo,
-        [name]: formattedValue,
-      });
-    } else {
-      setPaymentInfo({
-        ...paymentInfo,
-        [name]: value,
-      });
     }
 
+    setPaymentInfo((prev) => ({
+      ...prev,
+      [name]: formattedValue || value,
+    }));
+
     if (errors.payment[name]) {
-      setErrors({
-        ...errors,
-        payment: { ...errors.payment, [name]: undefined },
-      });
+      setErrors((prev) => ({
+        ...prev,
+        payment: { ...prev.payment, [name]: undefined },
+      }));
     }
   };
 
-  const handlePlaceOrder = () => {
-    if (validatePaymentInfo()) {
+  const handlePlaceOrder = async () => {
+    if (!validatePaymentInfo()) return;
+
+    if (!products || products.length === 0) {
+      setError("No products to order");
+      return;
+    }
+
+    try {
       localStorage.removeItem("cart");
       window.dispatchEvent(new Event("cartUpdated"));
-      navigate("/orderconfirmation", {
-        state: {
-          products,
-          fromCart,
-          shippingInfo,
-          paymentInfo: {
-            ...paymentInfo,
-            cardNumber: `•••• •••• •••• ${paymentInfo.cardNumber.slice(-4)}`,
-          },
+
+      const orderData = {
+        products: products.map((p) => ({
+          id: p.id || `temp-${Math.random().toString(36).substr(2, 9)}`,
+          name: p.name || "Unknown Product",
+          price: p.price || 0,
+          quantity: p.quantity || 1,
+          image: p.image || "",
+        })),
+        fromCart,
+        shippingInfo,
+        paymentInfo: {
+          ...paymentInfo,
+          cardNumber: paymentInfo.cardNumber
+            ? `•••• •••• •••• ${paymentInfo.cardNumber.slice(-4)}`
+            : "•••• •••• •••• ••••",
         },
+        timestamp: new Date().toISOString(),
+      };
+
+      navigate("/orderconfirmation", {
+        state: orderData,
       });
+    } catch (err) {
+      setError(err.message || "Failed to place order");
+      console.error("Order error:", err);
     }
   };
 
@@ -252,7 +313,7 @@ const Payment = () => {
             </ZTypography>
             <List>
               {products.map((item) => (
-                <ListItem key={item.id} divider>
+                <ListItem key={item.id || Math.random()} divider>
                   <ListItemAvatar>
                     <Avatar
                       src={item.image}
@@ -267,10 +328,10 @@ const Payment = () => {
                     width="100%"
                   >
                     <ZTypography>
-                      {item.name} (x{item.quantity})
+                      {item.name || "Product"} (x{item.quantity || 1})
                     </ZTypography>
                     <ZTypography>
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                     </ZTypography>
                   </Box>
                 </ListItem>
@@ -291,79 +352,79 @@ const Payment = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="First Name"
                   name="firstName"
                   value={shippingInfo.firstName}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.firstName}
                   helperText={errors.shipping.firstName}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="Last Name"
                   name="lastName"
                   value={shippingInfo.lastName}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.lastName}
                   helperText={errors.shipping.lastName}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
                 <ZTextField
-                  fullWidth
                   label="Address"
                   name="address"
                   value={shippingInfo.address}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.address}
                   helperText={errors.shipping.address}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="City"
                   name="city"
                   value={shippingInfo.city}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.city}
                   helperText={errors.shipping.city}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="Zip Code"
                   name="zipCode"
                   value={shippingInfo.zipCode}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.zipCode}
                   helperText={errors.shipping.zipCode}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="State"
                   name="state"
                   value={shippingInfo.state}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.state}
                   helperText={errors.shipping.state}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  fullWidth
                   label="Country"
                   name="country"
                   value={shippingInfo.country}
                   onChange={handleShippingChange}
                   error={!!errors.shipping.country}
                   helperText={errors.shipping.country}
+                  fullWidth
                 />
               </Grid>
             </Grid>
@@ -397,20 +458,19 @@ const Payment = () => {
               )}
             </FormControl>
             <ZTextField
-              fullWidth
               label="Card Number"
               name="cardNumber"
               value={paymentInfo.cardNumber}
               onChange={handlePaymentChange}
-              sx={{ mb: 2 }}
               error={!!errors.payment.cardNumber}
               helperText={errors.payment.cardNumber}
               placeholder="1234 5678 9012 3456"
+              fullWidth
+              sx={{ mb: 2 }}
             />
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <ZTextField
-                  fullWidth
                   label="Expiry Date"
                   name="expiryDate"
                   value={paymentInfo.expiryDate}
@@ -418,11 +478,11 @@ const Payment = () => {
                   error={!!errors.payment.expiryDate}
                   helperText={errors.payment.expiryDate}
                   placeholder="MM/YY"
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={6}>
                 <ZTextField
-                  fullWidth
                   label="CVV"
                   name="cvv"
                   value={paymentInfo.cvv}
@@ -430,28 +490,46 @@ const Payment = () => {
                   error={!!errors.payment.cvv}
                   helperText={errors.payment.cvv}
                   placeholder="123"
+                  fullWidth
                 />
               </Grid>
             </Grid>
           </Paper>
         );
       default:
-        throw new Error("Unknown step");
+        return null;
     }
   };
 
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
+      <ZToasterMsg
+        open={!!error}
+        severity="error"
+        message={error}
+        onClose={() => setError(null)}
+      />
+
       <IconButton
         onClick={handleBackClick}
-        sx={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-        }}
+        sx={{ position: "absolute", top: 16, right: 16 }}
       >
         <ArrowBackIcon />
       </IconButton>
+
       <ZTypography variant="h4" gutterBottom>
         Checkout
       </ZTypography>

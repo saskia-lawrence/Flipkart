@@ -55,7 +55,7 @@ const OrderConfirmation = () => {
         carrier: ["FedEx", "UPS", "USPS"][Math.floor(Math.random() * 3)],
       };
 
-      const existingOrders = JSON.parse(localStorage.getItem("orders") || []);
+      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
 
       const updatedOrders = [newOrder, ...existingOrders];
 
