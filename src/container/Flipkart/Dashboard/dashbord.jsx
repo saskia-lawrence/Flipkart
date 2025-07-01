@@ -1,62 +1,36 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
+import { useNavigate, useLocation } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {
-  AppBar,
-  Toolbar,
   Typography as MuiTypography,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
   Box,
-  CssBaseline,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Badge,
-  Avatar,
-  Menu,
-  MenuItem,
+  Container,
+  Paper,
+  Chip,
   Card,
+  InputAdornment,
   CardMedia,
   CardContent,
   Button,
   Grid,
-  Container,
-  Paper,
-  Chip,
 } from "@mui/material";
 import {
-  Menu as MenuIcon,
-  ShoppingCart,
-  Dashboard as DashboardIcon,
-  Inventory,
-  People,
-  Settings,
-  Logout,
-  Notifications,
-  ChevronLeft,
+  LocalOffer,
+  Star,
+  Search,
+  FlashOn,
   LocalMall,
   Face,
   ChildCare,
-  Star,
-  FlashOn,
-  LocalOffer,
-  Fastfood,
-  SportsEsports,
   Devices,
-  Spa,
   Home,
-  Restaurant,
+  Spa,
+  Fastfood,
   ChevronRight,
+  ChevronLeft,
+  Inventory,
 } from "@mui/icons-material";
 
 import womenFashion from "../../../utils/assets/images/women-fashion.jpg";
@@ -70,15 +44,15 @@ import gadgets from "../../../utils/assets/images/gadgets.jpg";
 import toys from "../../../utils/assets/images/toys.jpg";
 import sports from "../../../utils/assets/images/sports.jpg";
 import books from "../../../utils/assets/images/books.jpg";
-import jewelry from "../../../utils/assets/images/jewelry.jpg";
-import furniture from "../../../utils/assets/images/furniture.jpg";
-import appliances from "../../../utils/assets/images/appliances.jpg";
 import sploffer1 from "../../../utils/assets/images/sploffer1.jpg";
 import sploffer2 from "../../../utils/assets/images/sploffer2.jpg";
 import sploffer3 from "../../../utils/assets/images/sploffer3.jpg";
 import sploffer5 from "../../../utils/assets/images/sploffer5.jpg";
 import spoffe4 from "../../../utils/assets/images/spoffe4.jpg";
-import { lable } from "../../../utils/constants/lables";
+import ZButton from "../../../components/ZButton/zbutton";
+import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
+import ZTextField from "../../../components/ZTextFeild/ztextfeild";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -136,26 +110,6 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      logoutDialogOpen: false,
-      profileDialogOpen: false,
-      cartItems: [],
-      cartCount: 0,
-      user: {
-        name: props.location?.state?.user?.username || "Guest",
-        email: props.location?.state?.user?.email || "",
-        mobile: props.location?.state?.user?.mobile || "",
-        avatar: props.location?.state?.user?.avatar || "",
-        role: props.location?.state?.user?.role || "User",
-      },
-      isLoading: false,
-      snackbar: { open: false, message: "", severity: "" },
-      drawerOpen: true,
-      anchorEl: null,
-      notifications: [
-        lable.dashboard.notifications.newOrder,
-        lable.dashboard.notifications.paymentProcessed,
-        lable.dashboard.notifications.newCustomer,
-      ],
       categories: [
         {
           id: 1,
@@ -330,865 +284,358 @@ class Dashboard extends React.Component {
           category: "Books",
         },
       ],
+      showToast: false,
+      toastMessage: "",
+      toastSeverity: "",
     };
   }
 
-  handleMenuProfileClick = () => {
-    this.props.navigate("/profile");
-  };
-
-  handleProfileClick = () => {
-    this.setState({ profileDialogOpen: true });
-  };
-
-  handleProfileClose = () => {
-    this.setState({ profileDialogOpen: false });
-  };
-
-  handleLogout = () => {
-    this.props.navigate("/");
-  };
-
-  handleLogoutConfirm = () => {
-    this.setState({ logoutDialogOpen: false });
-    this.props.navigate("/");
-  };
-
-  toggleDrawer = () => {
-    this.setState({ drawerOpen: !this.state.drawerOpen });
-  };
-
-  handleMenuOpen = (event) => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  updateCartCount = () => {
-    const count = this.state.cartItems.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-    this.setState({ cartCount: count });
+  showToast = (message, severity = "success") => {
+    this.setState({
+      showToast: true,
+      toastMessage: message,
+      toastSeverity: severity,
+    });
+    setTimeout(() => this.setState({ showToast: false }), 3000);
   };
 
   handleAddToCart = (product) => {
-    this.setState((prevState) => {
-      const existingItem = prevState.cartItems.find(
-        (item) => item.id === product.id
-      );
-      let updatedCart;
-
-      if (existingItem) {
-        updatedCart = prevState.cartItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        updatedCart = [...prevState.cartItems, { ...product, quantity: 1 }];
-      }
-
-      return {
-        cartItems: updatedCart,
-        cartCount: updatedCart.reduce(
-          (total, item) => total + item.quantity,
-          0
-        ),
-      };
-    });
-  };
-
-  componentDidMount() {
-    console.log(
-      "Component mounted - Location state:",
-      this.props.location?.state
-    );
-    console.log(
-      "User data received:",
-      this.props.location?.state?.user || "No user data received"
-    );
-  }
-
-  handleMenuClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  handleLogoutClick = () => {
-    this.setState({ logoutDialogOpen: true });
-  };
-
-  handleLogoutCancel = () => {
-    this.setState({ logoutDialogOpen: false });
+    this.showToast(`${product.name} added to cart!`);
   };
 
   handleCategoryClick = (categoryId, categoryName) => {
     if (categoryName === "Women's Fashion") {
       this.props.navigate("/womens", {
-        state: { user: this.state.user },
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Men's Fashion") {
+      this.props.navigate("/mens", {
+        state: { user: this.props.location?.state?.user },
       });
     } else {
-      this.props.navigate(`/dashboard/products?category=${categoryId}`, {
-        state: { user: this.state.user },
+      this.props.navigate(`/products?category=${categoryId}`, {
+        state: { user: this.props.location?.state?.user },
       });
     }
   };
+
   render() {
     const {
-      user,
-      drawerOpen,
-      anchorEl,
-      notifications,
       categories,
-      logoutDialogOpen,
       specialOffers,
       featuredProducts,
+      showToast,
+      toastMessage,
+      toastSeverity,
     } = this.state;
-    const open = Boolean(anchorEl);
-
-    const drawerWidth = 240;
+    const { location } = this.props;
 
     const carouselSettings = {
       dots: true,
       infinite: true,
-      speed: 300,
+      speed: 500,
       slidesToShow: 3,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 1000,
+      autoplaySpeed: 3000,
       pauseOnHover: true,
       nextArrow: <SampleNextArrow />,
       prevArrow: <SamplePrevArrow />,
       responsive: [
         {
-          breakpoint: 1024,
+          breakpoint: 1200,
           settings: {
             slidesToShow: 2,
-            slidesToScroll: 1,
           },
         },
         {
-          breakpoint: 600,
+          breakpoint: 768,
           settings: {
             slidesToShow: 1,
-            slidesToScroll: 1,
           },
         },
       ],
     };
 
-    const menuItems = [
-      {
-        text: lable.dashboard.menuItems.dashboard,
-        icon: <DashboardIcon />,
-        path: "/dashboard",
-      },
-      {
-        text: "Women's Fashion",
-        icon: <LocalMall />,
-        path: "/dashboard/womens-fashion",
-      },
-      {
-        text: lable.dashboard.menuItems.products,
-        icon: <Inventory />,
-        path: "/dashboard/products",
-      },
-      {
-        text: lable.dashboard.menuItems.orders,
-        icon: <ShoppingCart />,
-        path: "/dashboard/orders",
-      },
-      {
-        text: lable.dashboard.menuItems.customers,
-        icon: <People />,
-        path: "/dashboard/customers",
-      },
-      {
-        text: lable.dashboard.menuItems.settings,
-        icon: <Settings />,
-        path: "/dashboard/settings",
-      },
-    ];
+    // Consistent card height settings
+    const cardHeight = 420;
+    const imageHeight = 200;
 
     return (
-      <Box
-        sx={{ display: "flex", minHeight: "100vh", backgroundColor: "#f5f5f5" }}
-      >
-        <CssBaseline />
-
-        {/* Logout Confirmation Dialog */}
-        <Dialog
-          open={logoutDialogOpen}
-          onClose={this.handleLogoutCancel}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {lable.dashboard.confirmLogout.title}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {lable.dashboard.confirmLogout.message}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleLogoutCancel}>
-              {lable.dashboard.confirmLogout.cancel}
-            </Button>
-            <Button
-              onClick={this.handleLogoutConfirm}
-              color="error"
-              autoFocus
-              startIcon={<Logout />}
-            >
-              {lable.dashboard.confirmLogout.logout}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog
-          open={this.state.profileDialogOpen}
-          onClose={this.handleProfileClose}
-          fullWidth
-          maxWidth="sm"
+      <Container maxWidth="xl" sx={{ mt: 2 }}>
+        {/* Toast Notification */}
+        <ZToasterMsg
+          open={showToast}
+          message={toastMessage}
+          severity={toastSeverity}
+          onClose={() => this.setState({ showToast: false })}
+        />
+        <Card
           sx={{
-            "& .MuiDialog-paper": {
-              width: "300px", // Set your desired width
-              maxWidth: "90vw", // Ensure it doesn't exceed viewport on small screens
-            },
+            p: 3,
+            borderRadius: 2,
+            margin: -3,
+            boxShadow: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            minHeight: "100vh",
+            position: "relative",
           }}
         >
-          <DialogTitle>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <MuiTypography variant="h6">My Profile</MuiTypography>
-              <IconButton onClick={this.handleProfileClose}>
-                <ChevronLeft />
-              </IconButton>
-            </Box>
-          </DialogTitle>
-          <DialogContent>
-            <Box sx={{ p: 2 }}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <MuiTypography variant="h6" sx={{ mb: 2 }}>
-                  Welcome, {this.state.user.name}!
-                </MuiTypography>
-
-                <Box>
-                  <MuiTypography variant="subtitle2" color="textSecondary">
-                    User Name
-                  </MuiTypography>
-                  <MuiTypography variant="body1">
-                    {this.state.user.name}
-                  </MuiTypography>
-                </Box>
-
-                <Box>
-                  <MuiTypography variant="subtitle2" color="textSecondary">
-                    Email
-                  </MuiTypography>
-                  <MuiTypography variant="body1">
-                    {this.state.user.email}
-                  </MuiTypography>
-                </Box>
-
-                <Box>
-                  <MuiTypography variant="subtitle2" color="textSecondary">
-                    Mobile
-                  </MuiTypography>
-                  <MuiTypography variant="body1">
-                    {this.state.user.mobile || "Not provided"}
-                  </MuiTypography>
-                </Box>
-
-                <Box>
-                  <MuiTypography variant="subtitle2" color="textSecondary">
-                    Role
-                  </MuiTypography>
-                  <MuiTypography variant="body1">
-                    {this.state.user.role}
-                  </MuiTypography>
-                </Box>
-              </Box>
-            </Box>
-          </DialogContent>
-          <DialogActions></DialogActions>
-        </Dialog>
-
-        {/* App Bar */}
-        <AppBar
-          position="fixed"
-          sx={{
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            backgroundColor: "#1976d2",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={this.toggleDrawer}
-              edge="start"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <MuiTypography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1, fontWeight: "bold", letterSpacing: "0.5px" }}
-            >
-              Zoi Cart
-            </MuiTypography>
-
-            {/* Cart Icon */}
-            <IconButton
-              color="inherit"
-              onClick={() => this.props.navigate("/cart")}
-              sx={{ mr: 1 }}
-            >
-              <Badge badgeContent={this.state.cartCount} color="error">
-                <ShoppingCart />
-              </Badge>
-            </IconButton>
-
-            {/* Notifications Icon */}
-            <IconButton color="inherit">
-              <Badge badgeContent={notifications.length} color="error">
-                <Notifications />
-              </Badge>
-            </IconButton>
-
-            {/* Profile Avatar */}
-            <IconButton
-              onClick={this.handleMenuOpen}
-              color="inherit"
-              sx={{ ml: 2 }}
-            >
-              <Avatar
-                alt={user.name}
-                src={user.avatar}
-                sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: "white",
-                  color: "#1976d2",
-                }}
-              >
-                {user?.name?.charAt(0) || "G"}
-              </Avatar>
-            </IconButton>
-
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={this.handleMenuClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                  mt: 1.5,
-                  "& .MuiAvatar-root": {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  "&:before": {
-                    content: '""',
-                    display: "block",
-                    position: "absolute",
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: "background.paper",
-                    transform: "translateY(-50%) rotate(45deg)",
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <MenuItem onClick={this.handleProfileClick} sx={{ py: 1.5 }}>
-                <Avatar /> Profile
-              </MenuItem>
-              <Divider />
-              <MenuItem
-                onClick={this.handleLogoutClick}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#ffebee",
-                  },
-                  py: 1.5,
-                }}
-              >
-                <ListItemIcon>
-                  <Logout fontSize="small" color="error" />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Logout"
-                  primaryTypographyProps={{ color: "error" }}
-                />
-              </MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
-
-        {/* Sidebar Drawer */}
-        <Drawer
-          variant="persistent"
-          open={drawerOpen}
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              backgroundColor: "#ffffff",
-              borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-              height: "100vh",
-              overflowY: "hidden",
-            },
-          }}
-        >
-          <Toolbar />
-          <Box
-            sx={{
-              overflow: "hidden",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
+          {/* Welcome Section */}
+          <Paper
+            elevation={0}
+            sx={{ borderRadius: 2, width: "100%", margin: -1, p: 3 }}
           >
-            <Box sx={{ p: 1 }}>
-              <IconButton onClick={this.toggleDrawer}>
-                <ChevronLeft />
-              </IconButton>
-            </Box>
-            <Divider />
+            <ZTypography variant="h4" fontWeight="bold">
+              Welcome back,{" "}
+              {this.props.location?.state?.user?.username || "Guest"}!
+            </ZTypography>
+            <ZTypography variant="body1" color="text.secondary">
+              Here's what's happening with your store today.
+            </ZTypography>
+          </Paper>
 
-            <Box sx={{ flexGrow: 1, overflowY: "hidden" }}>
-              <List>
-                {menuItems.map((item) => (
-                  <ListItem
-                    button
-                    key={item.text}
-                    onClick={() => this.props.navigate(item.path)}
-                    selected={window.location.pathname === item.path}
+          {/* Search Bar */}
+          <Box sx={{ px: 3 }}>
+            <ZTextField
+              fullWidth
+              placeholder="Search products..."
+              variant="outlined"
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+
+          {/* Special Offers Section with Carousel */}
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 2, mt: -3 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
+              <MuiTypography variant="h5" sx={{ fontWeight: "bold" }}>
+                <LocalOffer
+                  color="error"
+                  sx={{ verticalAlign: "middle", mr: 1 }}
+                />
+                Today's Special Offers
+              </MuiTypography>
+            </Box>
+
+            <Slider {...carouselSettings}>
+              {specialOffers.map((offer) => (
+                <Box key={offer.id} sx={{ px: 1, pb: 2 }}>
+                  <Card
                     sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#e3f2fd",
-                        borderLeft: "4px solid #1976d2",
-                      },
-                      "&.Mui-selected:hover": {
-                        backgroundColor: "#e3f2fd",
-                      },
+                      height: 280, // Reduced height
+                      position: "relative",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      boxShadow: 2,
+                      display: "flex",
+                      flexDirection: "column",
                       "&:hover": {
-                        backgroundColor: "#f5f5f5",
+                        boxShadow: 4,
                       },
-                      py: 1.5,
                     }}
                   >
-                    <ListItemIcon
-                      sx={{
-                        color:
-                          window.location.pathname === item.path
-                            ? "#1976d2"
-                            : "inherit",
-                      }}
-                    >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      primaryTypographyProps={{
-                        fontWeight:
-                          window.location.pathname === item.path
-                            ? "bold"
-                            : "normal",
-                      }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </Box>
-        </Drawer>
-
-        {/* Main Content */}
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-          }}
-        >
-          <Toolbar />
-
-          {/* Dashboard Content */}
-          <Container maxWidth="xl" sx={{ mt: 2 }}>
-            {/* Welcome Section */}
-            <Paper elevation={0} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-              <MuiTypography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
-                Welcome back, {user.name}!
-              </MuiTypography>
-              <MuiTypography variant="body1" color="text.secondary">
-                Here's what's happening with your store today.
-              </MuiTypography>
-            </Paper>
-            {/* Special Offers Section with Carousel */}
-            <Paper elevation={0} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 3,
-                }}
-              >
-                <MuiTypography variant="h5" sx={{ fontWeight: "bold" }}>
-                  <LocalOffer
-                    color="error"
-                    sx={{ verticalAlign: "middle", mr: 1 }}
-                  />
-                  Today's Special Offers
-                </MuiTypography>
-              </Box>
-
-              <Slider {...carouselSettings}>
-                {specialOffers.map((offer) => (
-                  <Box key={offer.id} sx={{ px: 1, pb: 2 }}>
-                    <Card
-                      sx={{
-                        height: 300,
-                        position: "relative",
-                        borderRadius: 2,
-                        overflow: "hidden",
-                        boxShadow: 3,
-                        "&:hover": {
-                          transform: "scale(1.02)",
-                          transition: "transform 0.3s ease",
-                        },
-                      }}
-                    >
+                    {/* Image Section */}
+                    <Box sx={{ height: 160, overflow: "hidden" }}>
                       <CardMedia
                         component="img"
-                        height="200"
+                        height="160"
                         image={offer.image}
                         alt={offer.title}
                         sx={{
                           objectFit: "cover",
-                          height: "100%",
                           width: "100%",
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
+                          transition: "transform 0.3s",
+                          "&:hover": {
+                            transform: "scale(1.05)",
+                          },
                         }}
                       />
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          background:
-                            "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "flex-end",
-                          p: 2,
-                          color: "white",
-                        }}
-                      >
+                    </Box>
+
+                    {/* Content Section */}
+                    <Box
+                      sx={{
+                        p: 2,
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* Top Section - Category and Title */}
+                      <Box>
                         <Chip
                           label={offer.category}
                           size="small"
                           sx={{
-                            position: "absolute",
-                            top: 10,
-                            left: 10,
-                            backgroundColor: "rgba(25, 118, 210, 0.9)",
-                            color: "white",
+                            backgroundColor: "#f0f0f0",
+                            color: "#1976d2",
                             fontWeight: "bold",
+                            mb: 1,
                           }}
                         />
                         <MuiTypography
                           variant="h6"
-                          sx={{ fontWeight: "bold", mb: 1 }}
+                          sx={{
+                            fontWeight: "bold",
+                            mb: 1,
+                            fontSize: "1.1rem",
+                          }}
                         >
                           {offer.title}
                         </MuiTypography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <MuiTypography
-                            variant="h4"
-                            sx={{ fontWeight: "bold", color: "#ffeb3b" }}
-                          >
-                            {offer.discount}
-                          </MuiTypography>
-                          <Chip
-                            label={offer.timeLeft}
-                            size="small"
-                            sx={{
-                              backgroundColor: "rgba(255,255,255,0.3)",
-                              color: "white",
-                              fontWeight: "bold",
-                            }}
-                          />
-                        </Box>
                       </Box>
-                    </Card>
-                  </Box>
-                ))}
-              </Slider>
-            </Paper>
-            {/* Categories Section */}
-            <Paper elevation={0} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 3,
-                }}
-              >
-                <MuiTypography variant="h5" sx={{ fontWeight: "bold" }}>
-                  Shop by Category
-                </MuiTypography>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => this.props.navigate("/products")}
-                  sx={{ borderRadius: 2 }}
-                >
-                  View All Categories
-                </Button>
-              </Box>
 
-              <Grid container spacing={3}>
-                {categories.map((category) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        minHeight: "420px", // Slightly increased to accommodate content
-                        cursor: "pointer",
-                        transition: "transform 0.3s, box-shadow 0.3s",
-                        "&:hover": {
-                          transform: "translateY(-5px)",
-                          boxShadow: 3,
-                        },
-                        position: "relative",
-                        overflow: "hidden",
-                        borderRadius: 2,
-                        border: category.featured
-                          ? "2px solid #1976d2"
-                          : "1px solid #e0e0e0",
-                      }}
-                    >
-                      {/* Featured Chip */}
-                      {category.featured && (
-                        <Chip
-                          label="Featured"
-                          color="primary"
-                          size="small"
-                          sx={{
-                            position: "absolute",
-                            top: 10,
-                            right: 10,
-                            zIndex: 1,
-                            fontWeight: "bold",
-                          }}
-                        />
-                      )}
-
-                      {/* Image Section - Fixed Height */}
+                      {/* Bottom Section - Discount and Time */}
                       <Box
                         sx={{
-                          height: "180px",
-                          width: "100%",
-                          overflow: "hidden",
-                          position: "relative",
+                          display: "flex",
+                          alignItems: "flex-end",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <CardMedia
-                          component="img"
-                          image={category.image}
-                          alt={category.name}
+                        <MuiTypography
+                          variant="h4"
                           sx={{
-                            height: "100%",
-                            width: "100%",
-                            objectFit: "cover",
-                            transition: "transform 0.5s",
-                            "&:hover": {
-                              transform: "scale(1.05)",
-                            },
+                            fontWeight: "bold",
+                            color: "#ff5722",
+                            lineHeight: 1,
                           }}
-                        />
+                        >
+                          {offer.discount}
+                        </MuiTypography>
+                        <MuiTypography
+                          variant="caption"
+                          sx={{
+                            color: "text.secondary",
+                            fontWeight: "medium",
+                          }}
+                        >
+                          {offer.timeLeft}
+                        </MuiTypography>
                       </Box>
+                    </Box>
+                  </Card>
+                </Box>
+              ))}
+            </Slider>
+          </Paper>
 
-                      {/* Content Section - Flex Grow to fill remaining space */}
-                      <CardContent
+          {/* Categories Section */}
+          <Paper elevation={0} sx={{ p: 3, mb: 4, borderRadius: 2, px: 9 }}>
+            <Grid container spacing={3}>
+              {categories.map((category) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={category.id}>
+                  <Card
+                    sx={{
+                      height: cardHeight,
+                      display: "flex",
+                      flexDirection: "column",
+                      minWidth: "300px",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      boxShadow: 2,
+                      cursor: "pointer",
+                      transition: "transform 0.3s, box-shadow 0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: 3,
+                      },
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: 2,
+                      border: "1px solid #e0e0e0",
+                    }}
+                  >
+                    {/* Featured chip */}
+                    {category.featured && (
+                      <Chip
+                        label="Featured"
+                        color="primary"
+                        size="small"
                         sx={{
-                          flexGrow: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          p: 2,
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          zIndex: 1,
+                          fontWeight: "bold",
                         }}
+                      />
+                    )}
+
+                    {/* Image section */}
+                    <Box
+                      sx={{
+                        height: imageHeight,
+                        minWidth: "200px",
+
+                        overflow: "hidden",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={category.image}
+                        alt={category.name}
+                        sx={{
+                          height: "100%",
+                          width: "100%",
+                          objectFit: "cover",
+                          transition: "transform 0.5s",
+                          "&:hover": {
+                            transform: "scale(1.05)",
+                          },
+                        }}
+                      />
+                    </Box>
+
+                    {/* Content section */}
+                    <CardContent
+                      sx={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        p: 2,
+                      }}
+                    >
+                      {/* Category name and icon */}
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
                         <Box
-                          sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                        >
-                          <Box
-                            sx={{
-                              backgroundColor: category.featured
-                                ? "#1976d2"
-                                : "#757575",
-                              color: "white",
-                              p: 1,
-                              borderRadius: "50%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              mr: 1,
-                            }}
-                          >
-                            {category.icon}
-                          </Box>
-                          <MuiTypography
-                            variant="subtitle1"
-                            component="h3"
-                            sx={{
-                              fontWeight: "bold",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                            }}
-                          >
-                            {category.name}
-                          </MuiTypography>
-                        </Box>
-                        <MuiTypography
-                          variant="body2"
-                          color="text.secondary"
                           sx={{
-                            mb: 2,
-                            flexGrow: 1,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: "vertical",
-                          }}
-                        >
-                          {category.description}
-                        </MuiTypography>
-                      </CardContent>
-
-                      {/* Button Section - Fixed Height */}
-                      <Box sx={{ p: 2, pt: 0 }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          fullWidth
-                          sx={{
-                            borderRadius: 2,
-                            textTransform: "none",
-                            fontWeight: "bold",
                             backgroundColor: category.featured
                               ? "#1976d2"
                               : "#757575",
-                            "&:hover": {
-                              backgroundColor: category.featured
-                                ? "#1565c0"
-                                : "#616161",
-                            },
+                            color: "white",
+                            p: 1,
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            mr: 1,
                           }}
-                          onClick={() =>
-                            this.handleCategoryClick(category.id, category.name)
-                          }
                         >
-                          Shop Now
-                        </Button>
-                      </Box>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </Paper>
-            {/* Featured Products Section */}
-            <Paper elevation={0} sx={{ p: 3, borderRadius: 2 }}>
-              <MuiTypography variant="h5" sx={{ fontWeight: "bold", mb: 3 }}>
-                <Star color="warning" sx={{ verticalAlign: "middle", mr: 1 }} />
-                Featured Products
-              </MuiTypography>
-
-              <Grid container spacing={3}>
-                {featuredProducts.map((product) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        minHeight: "380px", // Adjusted for product cards
-                        transition: "transform 0.3s, box-shadow 0.3s",
-                        "&:hover": {
-                          transform: "translateY(-5px)",
-                          boxShadow: 3,
-                        },
-                        borderRadius: 2,
-                      }}
-                    >
-                      {/* Image Section - Fixed Height */}
-                      <Box
-                        sx={{
-                          height: "200px",
-                          width: "100%",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <CardMedia
-                          component="img"
-                          image={product.image}
-                          alt={product.name}
-                          sx={{
-                            height: "100%",
-                            width: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </Box>
-
-                      {/* Content Section - Flex Grow to fill remaining space */}
-                      <CardContent
-                        sx={{
-                          flexGrow: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          p: 2,
-                        }}
-                      >
+                          {category.icon}
+                        </Box>
                         <MuiTypography
-                          gutterBottom
                           variant="subtitle1"
+                          component="h3"
                           sx={{
                             fontWeight: "bold",
                             overflow: "hidden",
@@ -1198,68 +645,189 @@ class Dashboard extends React.Component {
                             WebkitBoxOrient: "vertical",
                           }}
                         >
-                          {product.name}
+                          {category.name}
                         </MuiTypography>
+                      </Box>
 
-                        {/* Rating Section */}
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      {/* Description */}
+                      <MuiTypography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          mb: 2,
+                          flexGrow: 1,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {category.description}
+                      </MuiTypography>
+                    </CardContent>
+
+                    {/* Button section */}
+                    <Box sx={{ p: 2, pt: 0 }}>
+                      <ZButton
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                          borderRadius: 2,
+                          textTransform: "none",
+                          fontWeight: "bold",
+                          backgroundColor: category.featured
+                            ? "#1976d2"
+                            : "#757575",
+                          "&:hover": {
+                            backgroundColor: category.featured
+                              ? "#1565c0"
+                              : "#616161",
+                          },
+                        }}
+                        onClick={() =>
+                          this.handleCategoryClick(category.id, category.name)
+                        }
+                      >
+                        Shop Now
+                      </ZButton>
+                    </Box>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
+
+          {/* Featured Products Section */}
+          <Paper elevation={0} sx={{ p: 3, borderRadius: 2, px: 7 }}>
+            <ZTypography variant="h5" fontWeight="bold" style={{ mb: 3 }}>
+              <Star color="warning" sx={{ verticalAlign: "middle", mr: 1 }} />
+              Featured Products
+            </ZTypography>
+
+            <Grid container spacing={3}>
+              {featuredProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                  <Card
+                    sx={{
+                      height: cardHeight,
+                      minWidth: "300px",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      display: "flex",
+                      flexDirection: "column",
+                      transition: "transform 0.3s, box-shadow 0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: 3,
+                      },
+                      borderRadius: 2,
+                    }}
+                  >
+                    {/* Product image */}
+                    <Box
+                      sx={{
+                        height: imageHeight,
+                        width: "100%",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={product.image}
+                        alt={product.name}
+                        sx={{
+                          height: "100%",
+                          width: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+
+                    {/* Product content */}
+                    <CardContent
+                      sx={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        p: 2,
+                      }}
+                    >
+                      <MuiTypography
+                        gutterBottom
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {product.name}
+                      </MuiTypography>
+
+                      {/* Rating */}
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            fontSize="small"
+                            color={
+                              star <= product.rating ? "warning" : "disabled"
+                            }
+                          />
+                        ))}
+                        <MuiTypography variant="caption" sx={{ ml: 1 }}>
+                          ({Math.floor(Math.random() * 50) + 10})
+                        </MuiTypography>
+                      </Box>
+
+                      {/* Price and button */}
+                      <Box
+                        sx={{
+                          mt: "auto",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <ZTypography
+                          variant="h6"
+                          fontWeight="bold"
+                          style={{ color: "#1976d2" }}
                         >
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              fontSize="small"
-                              color={
-                                star <= product.rating ? "warning" : "disabled"
-                              }
-                            />
-                          ))}
-                          <MuiTypography variant="caption" sx={{ ml: 1 }}>
-                            ({Math.floor(Math.random() * 50) + 10})
-                          </MuiTypography>
-                        </Box>
-
-                        {/* Price and Button Section */}
-                        <Box
+                          ${product.price.toFixed(2)}
+                        </ZTypography>
+                        <ZButton
+                          variant="contained"
+                          size="small"
+                          onClick={() => this.handleAddToCart(product)}
                           sx={{
-                            mt: "auto",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
+                            borderRadius: 2,
+                            textTransform: "none",
+                            fontWeight: "bold",
                           }}
                         >
-                          <MuiTypography
-                            variant="h6"
-                            sx={{ fontWeight: "bold", color: "#1976d2" }}
-                          >
-                            ${product.price.toFixed(2)}
-                          </MuiTypography>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            sx={{
-                              borderRadius: 2,
-                              textTransform: "none",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Add to Cart
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </Paper>{" "}
-          </Container>
-        </Box>
-      </Box>
+                          Add to Cart
+                        </ZButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
+        </Card>
+      </Container>
     );
   }
 }
 
-function withNavigation(Component) {
+function withRouter(Component) {
   return function WrappedComponent(props) {
     const navigate = useNavigate();
     const location = useLocation();
@@ -1267,4 +835,4 @@ function withNavigation(Component) {
   };
 }
 
-export default withNavigation(Dashboard);
+export default withRouter(Dashboard);

@@ -1,12 +1,12 @@
-
 import React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Paper, Typography, Stack, IconButton } from "@mui/material";
+import { Paper, Divider, Grid, Link, IconButton } from "@mui/material";
 import ZButton from "../../../components/ZButton/zbutton";
 import { useNavigate, useLocation } from "react-router-dom";
 import ZTextField from "../../../components/ZTextFeild/ztextfeild";
 import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
 import ecommercial from "../../../utils/assets/images/ecommercial.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
@@ -37,7 +37,7 @@ class ResetPassword extends React.Component {
   validateForm = () => {
     let valid = true;
     const newErrors = {};
-    const { resetPassword } = lable; // Use the imported lable
+    const { resetPassword } = lable;
 
     if (!this.state.Password) {
       newErrors.Password = resetPassword.newPasswordLabel + " is required";
@@ -73,9 +73,7 @@ class ResetPassword extends React.Component {
         ConfirmPassword: this.state.ConfirmPassword,
       };
 
-
       const response = await PostApi(ApiUrl.AddRegForm, params);
-   
 
       if (
         response &&
@@ -101,7 +99,7 @@ class ResetPassword extends React.Component {
             message:
               response?.message ||
               "Password reset completed but with unexpected response",
-            severity: lable.severity.warning, // Use imported lable
+            severity: lable.severity.warning,
           },
         });
       }
@@ -111,7 +109,7 @@ class ResetPassword extends React.Component {
         snackbar: {
           open: true,
           message: error.message || "An error occurred during password reset",
-          severity: lable.severity.error, // Use imported lable
+          severity: lable.severity.error,
         },
       });
     } finally {
@@ -129,7 +127,7 @@ class ResetPassword extends React.Component {
   };
 
   render() {
-    const { resetPassword } = lable; // Use the imported lable
+    const { resetPassword } = lable;
 
     return (
       <Box
@@ -164,7 +162,7 @@ class ResetPassword extends React.Component {
               <ArrowBackIcon />
             </IconButton>
 
-            <Typography
+            <ZTypography
               variant="h4"
               component="h1"
               gutterBottom
@@ -176,16 +174,16 @@ class ResetPassword extends React.Component {
               }}
             >
               {resetPassword.title}
-            </Typography>
+            </ZTypography>
 
-            <Typography
+            <ZTypography
               variant="body1"
               component="p"
               gutterBottom
               sx={{ textAlign: "center", mb: 3 }}
             >
               {resetPassword.instruction}
-            </Typography>
+            </ZTypography>
 
             <Box
               component="form"
@@ -203,7 +201,7 @@ class ResetPassword extends React.Component {
                 value={this.state.Password}
                 error={!!this.state.errors.Password}
                 helperText={this.state.errors.Password}
-                onChange={(e) => this.handleChange("Password", e)}
+                onChange={(e) => this.handleChange("Password", e.target.value)}
                 sx={{ mb: 2 }}
                 InputProps={{
                   startAdornment: (
@@ -223,7 +221,9 @@ class ResetPassword extends React.Component {
                 value={this.state.ConfirmPassword}
                 error={!!this.state.errors.ConfirmPassword}
                 helperText={this.state.errors.ConfirmPassword}
-                onChange={(e) => this.handleChange("ConfirmPassword", e)}
+                onChange={(e) =>
+                  this.handleChange("ConfirmPassword", e.target.value)
+                }
                 sx={{ mb: 2 }}
                 InputProps={{
                   startAdornment: (

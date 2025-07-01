@@ -14,7 +14,7 @@ export default function ZButton(props) {
         isNotEmpty(props.backgroundcolor) ? props.backgroundcolor : "primary"
       }
     >
-      {props.label}
+      {props.children}
     </Button>
   );
 }

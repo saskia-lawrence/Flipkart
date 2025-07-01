@@ -1,12 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Paper, Typography, Stack, Button, IconButton } from "@mui/material";
+import { Paper, Stack, IconButton } from "@mui/material";
 import ZButton from "../../../components/ZButton/zbutton";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useNavigate, useLocation } from "react-router-dom";
-import ZTextField from "../../../components/ZTextFeild/ztextfeild";
 import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
+import ZTextField from "../../../components/ZTextFeild/ztextfeild";
 import ecommercial from "../../../utils/assets/images/ecommercial.jpg";
 import { lable } from "../../../utils/constants/lables";
 
@@ -166,7 +167,7 @@ class OtpVerification extends React.Component {
               <ArrowBack />
             </IconButton>
 
-            <Typography
+            <ZTypography
               variant="h4"
               component="h1"
               gutterBottom
@@ -178,16 +179,16 @@ class OtpVerification extends React.Component {
               }}
             >
               {lable.otpVerification.title}
-            </Typography>
+            </ZTypography>
 
-            <Typography
+            <ZTypography
               variant="body1"
               component="p"
               gutterBottom
               sx={{ textAlign: "left", mb: 3 }}
             >
               {lable.otpVerification.message}
-            </Typography>
+            </ZTypography>
 
             <Box
               component="form"
@@ -231,13 +232,13 @@ class OtpVerification extends React.Component {
               </Stack>
 
               {isOtpWrong && (
-                <Typography
+                <ZTypography
                   color="error"
                   variant="body2"
                   sx={{ textAlign: "center", mb: 2 }}
                 >
                   {lable.otpVerification.invalidOtp}
-                </Typography>
+                </ZTypography>
               )}
 
               <Stack
@@ -247,19 +248,18 @@ class OtpVerification extends React.Component {
                 spacing={1}
                 sx={{ mb: 3 }}
               >
-                <Typography variant="body2">
+                <ZTypography variant="body2">
                   {isTimerRunning
                     ? `${lable.otpVerification.resendTimer} ${timer} ${lable.otpVerification.seconds}`
                     : lable.otpVerification.didNotReceive}
-                </Typography>
+                </ZTypography>
                 {!isTimerRunning && (
-                  <Button
+                  <ZButton
                     variant="text"
                     onClick={this.handleResendClick}
                     sx={{ minWidth: 0, color: "primary.main" }}
-                  >
-                    {lable.otpVerification.resend}
-                  </Button>
+                    label={lable.otpVerification.resend}
+                  />
                 )}
               </Stack>
 
@@ -275,9 +275,7 @@ class OtpVerification extends React.Component {
                   backgroundColor: "primary.main",
                   color: "white",
                 }}
-              >
-                {lable.otpVerification.confirm}
-              </ZButton>
+              />
             </Box>
           </Paper>
         </Container>

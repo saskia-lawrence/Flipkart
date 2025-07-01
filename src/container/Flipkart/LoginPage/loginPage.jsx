@@ -18,6 +18,7 @@ import ecommercial from "../../../utils/assets/images/ecommercial.jpg";
 import { ApiUrl } from "../../../utils/api/apiUrl";
 import { PostApi } from "../../../utils/api/networking";
 import { lable } from "../../../utils/constants/lables";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -287,18 +288,24 @@ class LoginPage extends Component {
             elevation={3}
             sx={{ p: 3, backgroundColor: "#fff", borderRadius: 2 }}
           >
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+            <ZTypography variant="h4" gutterBottom fontWeight="bold">
               {lable.login.title}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
+            </ZTypography>
+
+            <ZTypography variant="body1" gutterBottom>
               {lable.login.newUser}{" "}
-              <MuiLink component={Link} to="/register" underline="hover">
+              <ZTypography
+                component={Link}
+                to="/register"
+                color="primary"
+                sx={{ textDecoration: "underline", cursor: "pointer" }}
+              >
                 {lable.login.registerNow}
-              </MuiLink>
-            </Typography>
+              </ZTypography>
+            </ZTypography>
+
             <ZButton
               variant="outlined"
-              label={lable.login.continueWithGoogle}
               fullWidth
               startIcon={
                 <Google
@@ -311,12 +318,16 @@ class LoginPage extends Component {
                 />
               }
               sx={{ textTransform: "none", borderColor: "#ddd", mb: 2 }}
-            />
+            >
+              {lable.login.continueWithGoogle}
+            </ZButton>
+
             <Divider sx={{ my: 2 }}>
-              <Typography variant="body2" color="text.secondary">
+              <ZTypography variant="body2" color="text.secondary">
                 {lable.login.or}
-              </Typography>
+              </ZTypography>
             </Divider>
+
             <Box component="form" onSubmit={this.handleSubmit}>
               <ZTextField
                 fullWidth
@@ -327,6 +338,7 @@ class LoginPage extends Component {
                 helperText={touched.Email ? errors.Email : ""}
                 onChange={(e) => this.handleChange("Email", e.target.value)}
               />
+
               <ZTextField
                 fullWidth
                 label={lable.login.passwordLabel}
@@ -337,6 +349,7 @@ class LoginPage extends Component {
                 onChange={(e) => this.handleChange("Password", e.target.value)}
                 sx={{ mt: 2 }}
               />
+
               <Grid
                 container
                 alignItems="center"
@@ -359,31 +372,57 @@ class LoginPage extends Component {
                   />
                 </Grid>
                 <Grid container justifyContent="flex-end" sx={{ mt: 1 }}>
-                  <MuiLink
+                  <ZTypography
                     component="button"
-                    underline="hover"
                     onClick={this.handleForgotPassword}
+                    color="primary"
+                    sx={{
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      border: "none",
+                      background: "none",
+                      "&:hover": { textDecoration: "underline" },
+                    }}
                   >
                     {lable.login.forgotPassword}
-                  </MuiLink>
+                  </ZTypography>
                 </Grid>
               </Grid>
+
               <ZButton
                 type="submit"
                 fullWidth
-                label={lable.login.signIn}
                 variant="contained"
                 sx={{ mt: 3 }}
-              />
-              <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+              >
+                {lable.login.signIn}
+              </ZButton>
+
+              <ZTypography variant="body2" align="center" sx={{ mt: 2 }}>
                 {lable.login.agreementText}{" "}
-                <MuiLink href="#">{lable.login.privacyPolicy}</MuiLink>{" "}
+                <ZTypography
+                  component="a"
+                  href="#"
+                  color="primary"
+                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                >
+                  {lable.login.privacyPolicy}
+                </ZTypography>{" "}
                 {lable.login.and}{" "}
-                <MuiLink href="#">{lable.login.cookiePolicy}</MuiLink>.
-              </Typography>
+                <ZTypography
+                  component="a"
+                  href="#"
+                  color="primary"
+                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                >
+                  {lable.login.cookiePolicy}
+                </ZTypography>
+                .
+              </ZTypography>
             </Box>
           </Paper>
         </Container>
+
         <ZToasterMsg
           open={snackbar.open}
           message={snackbar.message}
@@ -397,11 +436,10 @@ class LoginPage extends Component {
   }
 }
 
-// Create a wrapper component to provide the hooks
+// Wrapper component remains the same
 function LoginPageWrapper(props) {
   const navigate = useNavigate();
   const location = useLocation();
-
   return <LoginPage {...props} navigate={navigate} location={location} />;
 }
 

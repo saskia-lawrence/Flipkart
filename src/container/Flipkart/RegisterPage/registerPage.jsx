@@ -1,13 +1,14 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Paper, Typography, Link, Divider, Grid } from "@mui/material";
+import { Paper, Divider, Grid, Link } from "@mui/material";
 import ZButton from "../../../components/ZButton/zbutton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { withRouter } from "../../../route/navigation";
-import ZTextField from "../../../components/ZTextFeild/ztextfeild";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
 import IconButton from "@mui/material/IconButton";
 import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
+import ZTextField from "../../../components/ZTextFeild/ztextfeild";
 import ecommercial from "../../../utils/assets/images/ecommercial.jpg";
 import { ApiUrl } from "../../../utils/api/apiUrl";
 import { PostApi } from "../../../utils/api/networking";
@@ -57,17 +58,18 @@ class RegisterPage extends React.Component {
 
   validateField = (field, value) => {
     let error = "";
+    const stringValue = String(value || "");
 
     switch (field) {
       case "Username":
-        if (!value.trim()) {
+        if (!stringValue.trim()) {
           error = lable.required;
         }
         break;
       case "Email":
-        if (!value.trim()) {
+        if (!stringValue.trim()) {
           error = lable.required;
-        } else if (!/\S+@\S+\.\S+/.test(value)) {
+        } else if (!/\S+@\S+\.\S+/.test(stringValue)) {
           error = lable.login.invalidEmail;
         }
         break;
@@ -107,7 +109,6 @@ class RegisterPage extends React.Component {
     let valid = true;
     const newErrors = {};
 
-    // Validate each field individually
     if (!this.state.Username.trim()) {
       newErrors.Username = lable.required;
       valid = false;
@@ -288,7 +289,7 @@ class RegisterPage extends React.Component {
               <ArrowBackIcon />
             </IconButton>
 
-            <Typography
+            <ZTypography
               variant="h4"
               component="h1"
               gutterBottom
@@ -299,7 +300,7 @@ class RegisterPage extends React.Component {
               }}
             >
               {lable.register.title}
-            </Typography>
+            </ZTypography>
 
             <Box
               component="form"
@@ -322,7 +323,7 @@ class RegisterPage extends React.Component {
                 helperText={
                   this.state.touched.Username ? this.state.errors.Username : ""
                 }
-                onChange={(e) => this.handleChange("Username", e)}
+                onChange={(e) => this.handleChange("Username", e.target.value)}
                 sx={{ mb: 2 }}
               />
 
@@ -340,7 +341,7 @@ class RegisterPage extends React.Component {
                 helperText={
                   this.state.touched.Mobile ? this.state.errors.Mobile : ""
                 }
-                onChange={(e) => this.handleChange("Mobile", e)}
+                onChange={(e) => this.handleChange("Mobile", e.target.value)}
                 sx={{ mb: 2 }}
               />
 
@@ -358,7 +359,7 @@ class RegisterPage extends React.Component {
                 helperText={
                   this.state.touched.Email ? this.state.errors.Email : ""
                 }
-                onChange={(e) => this.handleChange("Email", e)}
+                onChange={(e) => this.handleChange("Email", e.target.value)}
                 sx={{ mb: 2 }}
               />
 
@@ -378,7 +379,7 @@ class RegisterPage extends React.Component {
                   this.state.touched.Password ? this.state.errors.Password : ""
                 }
                 value={this.state.Password}
-                onChange={(e) => this.handleChange("Password", e)}
+                onChange={(e) => this.handleChange("Password", e.target.value)}
                 sx={{ mb: 2 }}
               />
 
@@ -401,7 +402,9 @@ class RegisterPage extends React.Component {
                     : ""
                 }
                 value={this.state.ConfirmPassword}
-                onChange={(e) => this.handleChange("ConfirmPassword", e)}
+                onChange={(e) =>
+                  this.handleChange("ConfirmPassword", e.target.value)
+                }
                 sx={{ mb: 2 }}
               />
 
@@ -409,7 +412,6 @@ class RegisterPage extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
-                label={lable.register.submitButton}
                 sx={{
                   mt: 3,
                   mb: 2,
@@ -421,7 +423,7 @@ class RegisterPage extends React.Component {
                 {lable.register.submitButton}
               </ZButton>
 
-              <Typography
+              <ZTypography
                 variant="body2"
                 color="text.secondary"
                 sx={{ textAlign: "center" }}
@@ -434,7 +436,7 @@ class RegisterPage extends React.Component {
                 <Link href="#" underline="hover">
                   {lable.login.cookiePolicy}
                 </Link>
-              </Typography>
+              </ZTypography>
             </Box>
           </Paper>
         </Container>

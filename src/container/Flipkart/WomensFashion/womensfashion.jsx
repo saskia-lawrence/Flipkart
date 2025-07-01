@@ -4,9 +4,7 @@ import {
   Card,
   CardMedia,
   CardContent,
-  Typography,
   CardActions,
-  Button,
   Rating,
   Box,
   Container,
@@ -16,7 +14,6 @@ import {
   IconButton,
   Breadcrumbs,
   Link,
-  Badge,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -24,6 +21,12 @@ import FlashOnIcon from "@mui/icons-material/FlashOn";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { GetApi } from "../../../utils/api/networking";
+import { ApiUrl } from "../../../utils/api/apiUrl";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
+import ZButton from "../../../components/ZButton/zbutton";
+import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
+
 import womenFash1 from "../../../utils/assets/images/womenFash1.jpg";
 import womenFash2 from "../../../utils/assets/images/womenFash2.jpg";
 import womenFash3 from "../../../utils/assets/images/womenFash3.jpg";
@@ -40,8 +43,9 @@ import womenFash13 from "../../../utils/assets/images/womenFash13.jpg";
 import womenFash14 from "../../../utils/assets/images/womenFash14.jpg";
 import womenFash15 from "../../../utils/assets/images/womenFash15.jpg";
 import womenFash16 from "../../../utils/assets/images/womenFash16.jpg";
+import womenFash17 from "../../../utils/assets/images/womenFash17.jpg";
+import womenFash18 from "../../../utils/assets/images/womenFash18.jpg";
 
-// Create a wrapper component to use hooks with class component
 const withNavigation = (Component) => {
   return (props) => {
     const navigate = useNavigate();
@@ -53,7 +57,7 @@ class WomenFashion extends React.Component {
   constructor(props) {
     super(props);
 
-    const productImages = {
+    this.productImages = {
       1: womenFash1,
       2: womenFash2,
       3: womenFash3,
@@ -70,203 +74,80 @@ class WomenFashion extends React.Component {
       14: womenFash14,
       15: womenFash15,
       16: womenFash16,
+      17: womenFash17,
+      18: womenFash18,
     };
 
     this.state = {
       cart: [],
       selectedProduct: null,
+      products: [],
       notification: {
         show: false,
         message: "",
       },
-      products: [
-        {
-          id: 1,
-          name: "Elegant Floral Dress",
-          price: 49.99,
-          rating: 4.5,
-          image: productImages[1],
-          reviews: 128,
-          category: "Women's Fashion",
-        },
-        {
-          id: 2,
-          name: "Denim Jacket",
-          price: 59.99,
-          rating: 4.2,
-          image: productImages[2],
-          reviews: 86,
-          category: "Women's Fashion",
-        },
-        {
-          id: 3,
-          name: "Summer T-Shirt",
-          price: 19.99,
-          rating: 3.9,
-          image: productImages[3],
-          reviews: 45,
-          category: "Women's Fashion",
-        },
-        {
-          id: 4,
-          name: "Formal Blazer",
-          price: 89.99,
-          rating: 4.7,
-          image: productImages[4],
-          reviews: 210,
-          category: "Women's Fashion",
-        },
-        {
-          id: 5,
-          name: "Casual Jeans",
-          price: 39.99,
-          rating: 4.1,
-          image: productImages[5],
-          reviews: 156,
-          category: "Women's Fashion",
-        },
-        {
-          id: 6,
-          name: "Evening Gown",
-          price: 129.99,
-          rating: 4.8,
-          image: productImages[6],
-          reviews: 92,
-          category: "Women's Fashion",
-        },
-        {
-          id: 7,
-          name: "Sports Leggings",
-          price: 29.99,
-          rating: 4.3,
-          image: productImages[7],
-          reviews: 78,
-          category: "Women's Fashion",
-        },
-        {
-          id: 8,
-          name: "Winter Coat",
-          price: 99.99,
-          rating: 4.6,
-          image: productImages[8],
-          reviews: 134,
-          category: "Women's Fashion",
-        },
-        {
-          id: 9,
-          name: "Silk Scarf",
-          price: 24.99,
-          rating: 4.0,
-          image: productImages[9],
-          reviews: 65,
-          category: "Women's Fashion",
-        },
-        {
-          id: 10,
-          name: "Leather Handbag",
-          price: 79.99,
-          rating: 4.7,
-          image: productImages[10],
-          reviews: 187,
-          category: "Women's Fashion",
-        },
-        {
-          id: 11,
-          name: "Casual Sneakers",
-          price: 44.99,
-          rating: 4.4,
-          image: productImages[11],
-          reviews: 112,
-          category: "Women's Fashion",
-        },
-        {
-          id: 12,
-          name: "Boho Skirt",
-          price: 34.99,
-          rating: 4.2,
-          image: productImages[12],
-          reviews: 53,
-          category: "Women's Fashion",
-        },
-        {
-          id: 13,
-          name: "Office Blouse",
-          price: 29.99,
-          rating: 4.1,
-          image: productImages[13],
-          reviews: 47,
-          category: "Women's Fashion",
-        },
-        {
-          id: 14,
-          name: "Wool Sweater",
-          price: 54.99,
-          rating: 4.5,
-          image: productImages[14],
-          reviews: 89,
-          category: "Women's Fashion",
-        },
-        {
-          id: 15,
-          name: "Sun Hat",
-          price: 19.99,
-          rating: 3.8,
-          image: productImages[15],
-          reviews: 36,
-          category: "Women's Fashion",
-        },
-        {
-          id: 16,
-          name: "Linen Jumpsuit",
-          price: 64.99,
-          rating: 4.3,
-          image: productImages[16],
-          reviews: 72,
-          category: "Women's Fashion",
-        },
-      ],
     };
   }
 
+  fetchProducts = async () => {
+    try {
+      const data = await GetApi(ApiUrl.GetWomensFashion);
+
+      if (data.status === "S" && data.data) {
+        const products = data.data.map((item) => ({
+          id: item.womId,
+          name: item.womName,
+          price: item.womPrice,
+          rating: item.womRating,
+          image: this.productImages[item.womId] || "default.jpg",
+          reviews: item.womReviews,
+          category: "Women's Fashion",
+        }));
+        this.setState({ products });
+      } else {
+        throw new Error(data.message || "Failed to fetch products");
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      this.setState({
+        error: error.message,
+        products: [],
+      });
+    }
+  };
+
   handleAddToCart = (product, e) => {
     e?.stopPropagation();
-    this.setState(
-      (prevState) => {
-        const existingItem = prevState.cart.find(
-          (item) => item.id === product.id
-        );
-        const message = existingItem
-          ? `${product.name} quantity updated`
-          : `${product.name} added to cart`;
 
-        if (existingItem) {
-          return {
-            cart: prevState.cart.map((item) =>
-              item.id === product.id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-            ),
-            notification: {
-              show: true,
-              message,
-            },
-          };
-        } else {
-          return {
-            cart: [...prevState.cart, { ...product, quantity: 1 }],
-            notification: {
-              show: true,
-              message,
-            },
-          };
-        }
+    const savedCart = localStorage.getItem("cart");
+    let cart = savedCart ? JSON.parse(savedCart) : [];
+
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      cart = cart.map((item) =>
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      cart = [...cart, { ...product, quantity: 1 }];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("cartUpdated"));
+
+    this.setState({
+      notification: {
+        show: true,
+        message: existingItem
+          ? `${product.name} quantity updated`
+          : `${product.name} added to cart`,
       },
-      () => {
-        setTimeout(() => {
-          this.setState({ notification: { show: false, message: "" } });
-        }, 3000);
-      }
-    );
+      cart,
+    });
+
+    setTimeout(() => {
+      this.setState({ notification: { show: false, message: "" } });
+    }, 3000);
   };
 
   handleBuyNow = (product, e) => {
@@ -274,17 +155,8 @@ class WomenFashion extends React.Component {
     this.handleAddToCart(product, e);
     this.props.navigate("/payment", {
       state: {
-        products: this.state.cart.concat({ ...product, quantity: 1 }), // Include the new product
+        products: this.state.cart.concat({ ...product, quantity: 1 }),
         fromCart: false,
-      },
-    });
-  };
-
-  handleCheckout = () => {
-    this.props.navigate("/payment", {
-      state: {
-        products: this.state.cart,
-        fromCart: true,
       },
     });
   };
@@ -298,6 +170,7 @@ class WomenFashion extends React.Component {
     if (savedCart) {
       this.setState({ cart: JSON.parse(savedCart) });
     }
+    this.fetchProducts();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -310,282 +183,329 @@ class WomenFashion extends React.Component {
     this.setState({ selectedProduct: null });
   };
 
-  getCartItemCount = () => {
-    return this.state.cart.reduce((total, item) => total + item.quantity, 0);
-  };
-
   render() {
-    const { products, selectedProduct, cart } = this.state;
+    const { products, selectedProduct } = this.state;
 
     if (selectedProduct) {
       return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Box sx={{ mb: 3 }}>
-            <Button
-              startIcon={<ArrowBackIcon />}
-              onClick={this.handleBackToList}
-              sx={{
-                mb: 2,
-                textAlign: "center",
-                justifyContent: "center",
-                display: "flex",
-                width: "fit-content",
-              }}
-            >
-              Back to Products
-            </Button>
-            <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-              <Link color="inherit" href="/">
-                Home
-              </Link>
-              <Link color="inherit" href="/womens-fashion">
-                Women's Fashion
-              </Link>
-              <Typography color="text.primary">
-                {selectedProduct.name}
-              </Typography>
-            </Breadcrumbs>
-          </Box>
+        <Container maxWidth="lg" sx={{ py: 2, px: 2 }}>
+          <Card
+            sx={{
+              p: 5,
+              borderRadius: 2,
+              boxShadow: 3,
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              minHeight: "100vh",
+              position: "relative",
+            }}
+          >
+            <Box sx={{ mb: 3 }}>
+              <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+                <Link color="inherit" href="/">
+                  Home
+                </Link>
+                <Link color="inherit" href="/womens-fashion">
+                  Women's Fashion
+                </Link>
+                <ZTypography color="text.primary">
+                  {selectedProduct.name}
+                </ZTypography>
+              </Breadcrumbs>
+              <IconButton
+                onClick={this.handleBackToList}
+                sx={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                }}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
 
-          <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={6}>
-                <CardMedia
-                  component="img"
-                  image={selectedProduct.image}
-                  alt={selectedProduct.name}
-                  sx={{
-                    width: "100%",
-                    borderRadius: 2,
-                    objectFit: "cover",
-                    maxHeight: "500px",
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Box sx={{ mb: 2 }}>
-                  <Chip
-                    label="Bestseller"
-                    color="primary"
-                    size="small"
-                    sx={{ mb: 1 }}
-                  />
-                  <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
-                    {selectedProduct.name}
-                  </Typography>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <Rating
-                      value={selectedProduct.rating}
-                      precision={0.5}
-                      readOnly
+            <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
+              <Grid container spacing={4}>
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <CardMedia
+                      component="img"
+                      image={selectedProduct.image}
+                      alt={selectedProduct.name}
+                      sx={{
+                        width: "100%",
+                        height: "auto",
+                        maxHeight: "500px",
+                        borderRadius: 2,
+                        objectFit: "contain",
+                        mb: 3,
+                      }}
                     />
-                    <Typography variant="body2" color="text.secondary" ml={1}>
-                      ({selectedProduct.reviews} reviews)
-                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 2,
+                        width: "100%",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <ZButton
+                        variant="contained"
+                        color="primary"
+                        startIcon={<ShoppingCartIcon />}
+                        onClick={(e) =>
+                          this.handleAddToCart(selectedProduct, e)
+                        }
+                        sx={{
+                          py: 2,
+                          flex: 1,
+                          borderRadius: 1,
+                        }}
+                      >
+                        Add to Cart
+                      </ZButton>
+                      <ZButton
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<FlashOnIcon />}
+                        onClick={(e) => this.handleBuyNow(selectedProduct, e)}
+                        sx={{
+                          py: 2,
+                          flex: 1,
+                          borderRadius: 1,
+                        }}
+                      >
+                        Buy Now
+                      </ZButton>
+                    </Box>
                   </Box>
-                  <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-                    ${selectedProduct.price.toFixed(2)}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 3 }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris.
-                  </Typography>
-                  <Divider sx={{ my: 2 }} />
-                  <Box sx={{ mb: 3 }}>
-                    <Typography
-                      variant="subtitle1"
+                </Grid>
+
+                <Grid item xs={12} md={6} ml={15}>
+                  <Box display="flex" flexDirection="column" height="100%">
+                    <ZTypography
+                      variant="h4"
                       sx={{ fontWeight: "bold", mb: 1 }}
                     >
-                      Product Details:
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      - Material: 100% Cotton
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      - Care Instructions: Machine wash cold
-                    </Typography>
-                    <Typography variant="body2">
-                      - Size: Available in S, M, L, XL
-                    </Typography>
+                      {selectedProduct.name}
+                    </ZTypography>
+
+                    <Box display="flex" alignItems="center" mb={2}>
+                      <Rating
+                        value={selectedProduct.rating}
+                        precision={0.5}
+                        readOnly
+                      />
+                      <ZTypography
+                        variant="body2"
+                        color="text.secondary"
+                        ml={1}
+                      >
+                        ({selectedProduct.reviews} ratings)
+                      </ZTypography>
+                    </Box>
+
+                    <Box display="flex" gap={1} mb={3}>
+                      <IconButton aria-label="add to favorites" color="primary">
+                        <FavoriteBorderIcon />
+                      </IconButton>
+                      <IconButton aria-label="share" color="primary">
+                        <ShareIcon />
+                      </IconButton>
+                    </Box>
+
+                    <Box mb={3}>
+                      <ZTypography variant="h4" color="primary" sx={{ mb: 1 }}>
+                        ${selectedProduct.price.toFixed(2)}
+                      </ZTypography>
+                      <ZTypography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ textDecoration: "line-through" }}
+                      >
+                        M.R.P.: ${(selectedProduct.price * 1.5).toFixed(2)}
+                      </ZTypography>
+                      <ZTypography
+                        variant="body2"
+                        color="success.main"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        (33% off)
+                      </ZTypography>
+                      <ZTypography variant="body2" sx={{ mt: 1 }}>
+                        Inclusive of all taxes
+                      </ZTypography>
+                      <ZTypography variant="body2" sx={{ mt: 1 }}>
+                        EMI starts at ₹{(selectedProduct.price / 12).toFixed(0)}
+                        . No Cost EMI available
+                      </ZTypography>
+                      <Chip
+                        label="Bestseller"
+                        color="primary"
+                        size="small"
+                        sx={{ mb: 2, mt: 5 }}
+                      />
+                    </Box>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    <Box sx={{ mb: 3 }}>
+                      <ZTypography
+                        variant="subtitle1"
+                        sx={{ fontWeight: "bold", mb: 1 }}
+                      >
+                        Product Details:
+                      </ZTypography>
+                      <ZTypography variant="body2" sx={{ mb: 1 }}>
+                        - Material: 100% Cotton
+                      </ZTypography>
+                      <ZTypography variant="body2" sx={{ mb: 1 }}>
+                        - Care Instructions: Machine wash cold
+                      </ZTypography>
+                      <ZTypography variant="body2">
+                        - Size: Available in S, M, L, XL
+                      </ZTypography>
+                    </Box>
                   </Box>
-                </Box>
-                <CardActions>
-                  <Button
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                    startIcon={<ShoppingCartIcon />}
-                    fullWidth
-                    onClick={(e) => this.handleAddToCart(selectedProduct, e)}
-                  >
-                    Add to Cart
-                  </Button>
-                  <Button
-                    size="small"
-                    color="secondary"
-                    variant="contained"
-                    startIcon={<FlashOnIcon />}
-                    sx={{ ml: 1 }}
-                    fullWidth
-                    onClick={(e) => this.handleBuyNow(selectedProduct, e)}
-                  >
-                    Buy Now
-                  </Button>
-                </CardActions>
-                {this.state.notification.show && (
-                  <Box
-                    sx={{
-                      position: "fixed",
-                      bottom: 20,
-                      right: 20,
-                      backgroundColor: "green",
-                      color: "white",
-                      padding: 2,
-                      borderRadius: 1,
-                      zIndex: 9999,
-                    }}
-                  >
-                    {this.state.notification.message}
-                  </Box>
-                )}
-                <Box sx={{ display: "flex", mt: 2 }}>
-                  <IconButton aria-label="add to favorites" sx={{ mr: 1 }}>
-                    <FavoriteBorderIcon />
-                  </IconButton>
-                  <IconButton aria-label="share">
-                    <ShareIcon />
-                  </IconButton>
-                </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </Paper>
+            </Paper>
+          </Card>
+
+          <ZToasterMsg
+            open={this.state.notification.show}
+            message={this.state.notification.message}
+            severity="success"
+            onClose={() =>
+              this.setState({ notification: { show: false, message: "" } })
+            }
+          />
         </Container>
       );
     }
 
     return (
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Badge badgeContent={this.getCartItemCount()} color="primary">
-            <Button
-              variant="outlined"
-              startIcon={<ShoppingCartIcon />}
-              onClick={() => {
-                if (this.state.cart.length > 0) {
-                  this.props.navigate("/cart", {
-                    state: { cartItems: this.state.cart },
-                  });
-                } else {
-                  this.setState(
-                    {
-                      notification: {
-                        show: true,
-                        message: "Your cart is empty",
-                      },
-                    },
-                    () => {
-                      setTimeout(() => {
-                        this.setState({
-                          notification: { show: false, message: "" },
-                        });
-                      }, 3000);
-                    }
-                  );
-                }
+      <Container maxWidth="xl" sx={{ px: 5 }}>
+        <Card
+          sx={{
+            p: 5,
+            borderRadius: 2,
+            boxShadow: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            minHeight: "100vh",
+            position: "relative",
+          }}
+        >
+          <Box sx={{ mb: 2 }}>
+            <IconButton
+              onClick={() => this.props.navigate("/dashboard")}
+              sx={{
+                position: "absolute",
+                top: 16,
+                right: 16,
               }}
             >
-              View Cart
-            </Button>
-          </Badge>
-        </Box>
+              <ArrowBackIcon />
+            </IconButton>
+          </Box>
 
-        <Paper elevation={0} sx={{ p: 4, mb: 4, borderRadius: 2 }}>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            Women's Fashion
-          </Typography>
-          <Typography variant="subtitle1" sx={{ mb: 4 }}>
-            Discover our latest collection for women
-          </Typography>
+          <Paper elevation={0} sx={{ p: 4, mt: -7, borderRadius: 2 }}>
+            <ZTypography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+              Women's Fashion
+            </ZTypography>
+            <ZTypography variant="subtitle1" sx={{ mb: 4 }}>
+              Discover our latest collection for women
+            </ZTypography>
 
-          <Grid container spacing={4}>
-            {products.map((product) => (
-              <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    transition: "transform 0.3s",
-                    "&:hover": {
-                      transform: "scale(1.03)",
-                      boxShadow: 3,
-                      cursor: "pointer",
-                    },
-                  }}
-                  onClick={() => this.handleProductClick(product)}
-                >
-                  <CardMedia
-                    component="img"
-                    height="300"
-                    image={product.image}
-                    alt={product.name}
-                    sx={{ objectFit: "cover" }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {product.name}
-                    </Typography>
-                    <Typography variant="h6" color="text.primary">
-                      ${product.price.toFixed(2)}
-                    </Typography>
-                    <Box display="flex" alignItems="center" mt={1}>
-                      <Rating
-                        name="read-only"
-                        value={product.rating}
-                        precision={0.5}
-                        readOnly
+            <Grid container spacing={4} sx={{ px: 5 }}>
+              {products.length > 0 ? (
+                products.map((product) => (
+                  <Grid key={product.id} size={4}>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        boxShadow: 2,
+                        transition: "transform 0.3s",
+                        "&:hover": {
+                          transform: "scale(1.03)",
+                          boxShadow: 3,
+                          cursor: "pointer",
+                        },
+                      }}
+                      onClick={() => this.handleProductClick(product)}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="300"
+                        image={product.image}
+                        alt={product.name}
+                        sx={{ objectFit: "cover" }}
                       />
-                      <Typography variant="body2" color="text.secondary" ml={1}>
-                        ({product.reviews} reviews)
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                      startIcon={<ShoppingCartIcon />}
-                      fullWidth
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        this.handleAddToCart(product, e);
-                      }}
-                    >
-                      Add to Cart
-                    </Button>
-                    <Button
-                      size="small"
-                      color="secondary"
-                      variant="contained"
-                      startIcon={<FlashOnIcon />}
-                      sx={{ ml: 1 }}
-                      fullWidth
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        this.handleBuyNow(product, e);
-                      }}
-                    >
-                      Buy Now
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Paper>
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <ZTypography gutterBottom variant="h6" component="div">
+                          {product.name}
+                        </ZTypography>
+                        <ZTypography variant="h6" color="text.primary">
+                          ${product.price.toFixed(2)}
+                        </ZTypography>
+                        <Box display="flex" alignItems="center" mt={1}>
+                          <Rating
+                            name="read-only"
+                            value={product.rating}
+                            precision={0.5}
+                            readOnly
+                          />
+                          <ZTypography
+                            variant="body2"
+                            color="text.secondary"
+                            ml={1}
+                          >
+                            ({product.reviews} reviews)
+                          </ZTypography>
+                        </Box>
+                      </CardContent>
+                      <CardActions>
+                        <ZButton
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                          startIcon={<ShoppingCartIcon />}
+                          fullWidth
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            this.handleAddToCart(product, e);
+                          }}
+                        >
+                          Add to Cart
+                        </ZButton>
+                        <ZButton
+                          size="small"
+                          color="secondary"
+                          variant="contained"
+                          startIcon={<FlashOnIcon />}
+                          sx={{ ml: 1 }}
+                          fullWidth
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            this.handleBuyNow(product, e);
+                          }}
+                        >
+                          Buy Now
+                        </ZButton>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))
+              ) : (
+                <ZTypography variant="body1" sx={{ p: 4, width: "100%" }}>
+                  No products available
+                </ZTypography>
+              )}
+            </Grid>
+          </Paper>
+        </Card>
       </Container>
     );
   }
