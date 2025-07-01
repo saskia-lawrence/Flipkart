@@ -595,9 +595,9 @@ class MensFashion extends React.Component {
               Discover our latest collection for men
             </ZTypography>
 
-            <Grid container spacing={4} sx={{ px: 5 }}>
+            <Grid container spacing={10} sx={{ px: 5 }}>
               {products.map((product) => (
-                <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                <Grid key={product.id} size={4}>
                   <Card
                     sx={{
                       height: "100%",

@@ -416,7 +416,7 @@ class WomenFashion extends React.Component {
               Discover our latest collection for women
             </ZTypography>
 
-            <Grid container spacing={4} sx={{ px: 5 }}>
+            <Grid container spacing={10} sx={{ px: 5 }}>
               {products.length > 0 ? (
                 products.map((product) => (
                   <Grid key={product.id} size={4}>
