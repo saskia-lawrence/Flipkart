@@ -288,22 +288,35 @@ class LoginPage extends Component {
             elevation={3}
             sx={{ p: 3, backgroundColor: "#fff", borderRadius: 2 }}
           >
-            <ZTypography variant="h4" gutterBottom fontWeight="bold">
+            {/* Main Title */}
+            <ZTypography
+              flag={lable.mainheader}
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: "24px" }}
+            >
               {lable.login.title}
             </ZTypography>
 
-            <ZTypography variant="body1" gutterBottom>
+            {/* New User Text */}
+            <ZTypography flag={lable.label} gutterBottom>
               {lable.login.newUser}{" "}
               <ZTypography
                 component={Link}
                 to="/register"
                 color="primary"
-                sx={{ textDecoration: "underline", cursor: "pointer" }}
+                sx={{
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  display: "inline",
+                }}
+                flag={lable.label}
               >
                 {lable.login.registerNow}
               </ZTypography>
             </ZTypography>
 
+            {/* Google Button (unchanged) */}
             <ZButton
               variant="outlined"
               fullWidth
@@ -322,13 +335,15 @@ class LoginPage extends Component {
               {lable.login.continueWithGoogle}
             </ZButton>
 
+            {/* Divider with OR text */}
             <Divider sx={{ my: 2 }}>
-              <ZTypography variant="body2" color="text.secondary">
+              <ZTypography flag={lable.label} color="text.secondary">
                 {lable.login.or}
               </ZTypography>
             </Divider>
 
             <Box component="form" onSubmit={this.handleSubmit}>
+              {/* Form fields (unchanged) */}
               <ZTextField
                 fullWidth
                 label={lable.login.emailLabel}
@@ -376,11 +391,13 @@ class LoginPage extends Component {
                     component="button"
                     onClick={this.handleForgotPassword}
                     color="primary"
+                    flag={lable.label}
                     sx={{
                       textDecoration: "underline",
                       cursor: "pointer",
                       border: "none",
                       background: "none",
+                      p: 0,
                       "&:hover": { textDecoration: "underline" },
                     }}
                   >
@@ -398,13 +415,19 @@ class LoginPage extends Component {
                 {lable.login.signIn}
               </ZButton>
 
-              <ZTypography variant="body2" align="center" sx={{ mt: 2 }}>
+              {/* Footer Agreement Text */}
+              <ZTypography flag={lable.label} align="center" sx={{ mt: 2 }}>
                 {lable.login.agreementText}{" "}
                 <ZTypography
                   component="a"
                   href="#"
                   color="primary"
-                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                  flag={lable.label}
+                  sx={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    display: "inline",
+                  }}
                 >
                   {lable.login.privacyPolicy}
                 </ZTypography>{" "}
@@ -413,7 +436,12 @@ class LoginPage extends Component {
                   component="a"
                   href="#"
                   color="primary"
-                  sx={{ textDecoration: "underline", cursor: "pointer" }}
+                  flag={lable.label}
+                  sx={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    display: "inline",
+                  }}
                 >
                   {lable.login.cookiePolicy}
                 </ZTypography>

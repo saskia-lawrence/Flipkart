@@ -4,21 +4,19 @@ import {
   Card,
   CardMedia,
   CardContent,
-  Typography,
   CardActions,
-  Button,
-  Rating,
   Box,
   Container,
   Paper,
+  Rating, // Add Rating import
+  Link,
   Divider,
   Chip,
   IconButton,
   Breadcrumbs,
-  Link,
+  InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
@@ -26,7 +24,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-// Import men's fashion images (make sure these files exist in your assets)
+// Import images and components
 import mensFash1 from "../../../utils/assets/images/mensfash1.jpg";
 import mensFash2 from "../../../utils/assets/images/mensfash2.jpg";
 import mensFash3 from "../../../utils/assets/images/mensfash3.jpg";
@@ -42,12 +40,13 @@ import mensFash12 from "../../../utils/assets/images/mensfash12.jpg";
 import mensFash13 from "../../../utils/assets/images/mensfash13.jpg";
 import mensFash14 from "../../../utils/assets/images/mensfash14.jpg";
 import mensFash15 from "../../../utils/assets/images/mensfash15.jpg";
+
 import ZTypography from "../../../components/ZTyptography/ztyptography";
 import ZButton from "../../../components/ZButton/zbutton";
 import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
 import ZTextField from "../../../components/ZTextFeild/ztextfeild";
+import { lable } from "../../../utils/constants/lables";
 
-// Create a wrapper component to use hooks with class component
 const withNavigation = (Component) => {
   return (props) => {
     const navigate = useNavigate();
@@ -310,73 +309,55 @@ class MensFashion extends React.Component {
   };
 
   render() {
-    const { products, selectedProduct, cart } = this.state;
+    const { products, selectedProduct } = this.state;
 
     if (selectedProduct) {
       return (
         <Container maxWidth="lg" sx={{ py: 2, px: 2 }}>
           <Card
-            sx={{
-              p: 5,
-              borderRadius: 2,
-              boxShadow: 3,
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              minHeight: "100vh",
-              position: "relative",
-            }}
+            sx={{ p: 5, borderRadius: 2, boxShadow: 3, minHeight: "100vh" }}
           >
             {/* Header with back button and breadcrumbs */}
             <Box sx={{ mb: 3 }}>
               <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-                <ZTypography component={Link} href="/" color="inherit">
+                <ZTypography
+                  component={Link}
+                  to="/"
+                  flag={lable.label}
+                  color="inherit"
+                >
                   Home
                 </ZTypography>
                 <ZTypography
                   component={Link}
-                  href="/mens-fashion"
+                  to="/mens-fashion"
+                  flag={lable.label}
                   color="inherit"
                 >
                   Men's Fashion
                 </ZTypography>
-                <ZTypography color="text.primary">
+                <ZTypography flag={lable.label} color="text.primary">
                   {selectedProduct.name}
                 </ZTypography>
               </Breadcrumbs>
-              <IconButton
-                onClick={this.handleBackToList}
-                sx={{
-                  position: "absolute",
-                  top: 16,
-                  right: 16,
-                }}
-              >
+            </Box>
+            <Box
+              sx={{
+                position: "absolute",
+                top: 140,
+                right: 160,
+              }}
+            >
+              <IconButton onClick={this.handleBackToList}>
                 <ArrowBackIcon />
               </IconButton>
             </Box>
 
-            {/* Search Bar */}
-            <Box sx={{ mb: 3 }}>
-              <ZTextField
-                fullWidth
-                placeholder="Search products..."
-                variant="outlined"
-                size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-
             <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
-              <Grid container spacing={4}>
+              <Grid container spacing={10}>
                 {/* Left Column - Image with buttons below */}
                 <Grid item xs={12} md={6}>
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    {/* Image */}
                     <CardMedia
                       component="img"
                       image={selectedProduct.image}
@@ -392,14 +373,7 @@ class MensFashion extends React.Component {
                     />
 
                     {/* Action Buttons */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 2,
-                        width: "100%",
-                        justifyContent: "space-between",
-                      }}
-                    >
+                    <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
                       <ZButton
                         variant="contained"
                         color="primary"
@@ -425,15 +399,19 @@ class MensFashion extends React.Component {
                 </Grid>
 
                 {/* Right Column - Product Details */}
-                <Grid item xs={12} md={6} ml={15}>
+                <Grid item xs={12} md={6}>
                   <Box display="flex" flexDirection="column" height="100%">
                     {/* Product Info */}
-                    <ZTypography variant="h4" fontWeight="bold" mb={1}>
+                    <ZTypography
+                      flag={lable.mainheader}
+                      fontWeight="bold"
+                      mb={1}
+                    >
                       {selectedProduct.name}
                     </ZTypography>
 
                     <Box display="flex" alignItems="center" mb={1}>
-                      <ZTypography variant="body2" color="text.secondary">
+                      <ZTypography flag={lable.label} color="text.secondary">
                         Visit the {selectedProduct.brand || "Brand"} Store
                       </ZTypography>
                     </Box>
@@ -445,7 +423,7 @@ class MensFashion extends React.Component {
                         readOnly
                       />
                       <ZTypography
-                        variant="body2"
+                        flag={lable.label}
                         color="text.secondary"
                         ml={1}
                       >
@@ -465,20 +443,22 @@ class MensFashion extends React.Component {
 
                     {/* Pricing */}
                     <Box mb={3}>
-                      <ZTypography variant="h4" color="primary" mb={1}>
+                      <ZTypography
+                        flag={lable.mainheader}
+                        color="primary"
+                        mb={1}
+                      >
                         ${selectedProduct.price.toFixed(2)}
                       </ZTypography>
                       <ZTypography
-                        variant="body2"
+                        flag={lable.label}
                         color="text.secondary"
                         sx={{ textDecoration: "line-through" }}
                       >
-                        M.R.P.: $
-                        {selectedProduct.originalPrice?.toFixed(2) ||
-                          (selectedProduct.price * 1.5).toFixed(2)}
+                        M.R.P.: ${(selectedProduct.price * 1.5).toFixed(2)}
                       </ZTypography>
                       <ZTypography
-                        variant="body2"
+                        flag={lable.label}
                         color="success.main"
                         fontWeight="bold"
                       >
@@ -486,18 +466,17 @@ class MensFashion extends React.Component {
                         {Math.round(
                           (1 -
                             selectedProduct.price /
-                              (selectedProduct.originalPrice ||
-                                selectedProduct.price * 1.5)) *
+                              (selectedProduct.price * 1.5)) *
                             100
                         )}
                         % off)
                       </ZTypography>
-                      <ZTypography variant="body2" mt={1}>
+                      <ZTypography flag={lable.label} mt={1}>
                         Inclusive of all taxes
                       </ZTypography>
-                      <ZTypography variant="body2" mt={1}>
+                      <ZTypography flag={lable.label} mt={1}>
                         EMI starts at ₹{(selectedProduct.price / 12).toFixed(0)}
-                        . No Cost EMI available{" "}
+                        . No Cost EMI available
                       </ZTypography>
 
                       <Chip
@@ -512,16 +491,20 @@ class MensFashion extends React.Component {
 
                     {/* Product Details */}
                     <Box sx={{ mb: 3 }}>
-                      <ZTypography variant="subtitle1" fontWeight="bold" mb={1}>
+                      <ZTypography
+                        flag={lable.subheading}
+                        fontWeight="bold"
+                        mb={1}
+                      >
                         Product Details:
                       </ZTypography>
-                      <ZTypography variant="body2" mb={1}>
+                      <ZTypography flag={lable.label} mb={1}>
                         - Material: 100% Cotton
                       </ZTypography>
-                      <ZTypography variant="body2" mb={1}>
+                      <ZTypography flag={lable.label} mb={1}>
                         - Care Instructions: Machine wash cold
                       </ZTypography>
-                      <ZTypography variant="body2">
+                      <ZTypography flag={lable.label}>
                         - Size: Available in S, M, L, XL
                       </ZTypography>
                     </Box>
@@ -546,54 +529,29 @@ class MensFashion extends React.Component {
 
     return (
       <Container maxWidth="xl" sx={{ px: 3 }}>
-        <Card
-          sx={{
-            p: 5,
-            borderRadius: 2,
-            boxShadow: 3,
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            minHeight: "100vh",
-            position: "relative",
-          }}
-        >
-          {/* Add Back Arrow Button to Dashboard */}
-          <Box sx={{ mb: 2 }}>
-            <IconButton
-              onClick={() => this.props.navigate("/dashboard")}
+        <Card sx={{ p: 5, borderRadius: 2, boxShadow: 3, minHeight: "100vh" }}>
+          <Paper elevation={0} sx={{ p: 4, borderRadius: 2 }}>
+            {/* Add Back Arrow Button to Dashboard */}
+            <Box sx={{ mt: -5 }}>
+              <ZTypography flag={lable.mainheader} fontWeight="bold" mb={2}>
+                Men's Fashion
+              </ZTypography>
+              <ZTypography flag={lable.subheading} mb={4}>
+                Discover our latest collection for men
+              </ZTypography>
+            </Box>
+
+            <Box
               sx={{
                 position: "absolute",
-                top: 16,
-                right: 16,
+                top: 120,
+                right: 160,
               }}
             >
-              <ArrowBackIcon />
-            </IconButton>
-          </Box>
-
-          {/* Search Bar */}
-          <Box sx={{ mb: 3 }}>
-            <ZTextField
-              fullWidth
-              placeholder="Search products..."
-              variant="outlined"
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Box>
-
-          <Paper elevation={0} sx={{ p: 4, mt: -7, borderRadius: 2 }}>
-            <ZTypography variant="h4" fontWeight="bold" mb={2}>
-              Men's Fashion
-            </ZTypography>
-            <ZTypography variant="subtitle1" mb={4}>
-              Discover our latest collection for men
-            </ZTypography>
+              <IconButton onClick={() => this.props.navigate("/dashboard")}>
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
 
             <Grid container spacing={10} sx={{ px: 5 }}>
               {products.map((product) => (
@@ -603,7 +561,6 @@ class MensFashion extends React.Component {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      backgroundColor: "rgba(255, 255, 255, 0.9)",
                       boxShadow: 2,
                       transition: "transform 0.3s",
                       "&:hover": {
@@ -622,21 +579,20 @@ class MensFashion extends React.Component {
                       sx={{ objectFit: "cover" }}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <ZTypography gutterBottom variant="h6" component="div">
+                      <ZTypography flag={lable.subheading} gutterBottom>
                         {product.name}
                       </ZTypography>
-                      <ZTypography variant="h6" color="text.primary">
+                      <ZTypography flag={lable.subheading} color="text.primary">
                         ${product.price.toFixed(2)}
                       </ZTypography>
                       <Box display="flex" alignItems="center" mt={1}>
                         <Rating
-                          name="read-only"
                           value={product.rating}
                           precision={0.5}
                           readOnly
                         />
                         <ZTypography
-                          variant="body2"
+                          flag={lable.label}
                           color="text.secondary"
                           ml={1}
                         >

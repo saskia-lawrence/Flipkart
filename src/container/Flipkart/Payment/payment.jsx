@@ -308,7 +308,7 @@ const Payment = () => {
       case 0:
         return (
           <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-            <ZTypography variant="h6" gutterBottom>
+            <ZTypography flag="subheading" variant="h6" gutterBottom>
               Order Summary
             </ZTypography>
             <List>
@@ -327,10 +327,10 @@ const Payment = () => {
                     justifyContent="space-between"
                     width="100%"
                   >
-                    <ZTypography>
+                    <ZTypography flag="value">
                       {item.name || "Product"} (x{item.quantity || 1})
                     </ZTypography>
-                    <ZTypography>
+                    <ZTypography flag="value">
                       ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                     </ZTypography>
                   </Box>
@@ -338,7 +338,7 @@ const Payment = () => {
               ))}
             </List>
             <Divider sx={{ my: 2 }} />
-            <ZTypography variant="h6" textAlign="right">
+            <ZTypography flag="subheading" variant="h6" textAlign="right">
               Total: ${calculateTotal().toFixed(2)}
             </ZTypography>
           </Paper>
@@ -346,13 +346,13 @@ const Payment = () => {
       case 1:
         return (
           <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-            <ZTypography variant="h6" gutterBottom>
+            <ZTypography flag="subheading" variant="h6" gutterBottom>
               Shipping Information
             </ZTypography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="First Name"
+                  label={<ZTypography flag="label">First Name</ZTypography>}
                   name="firstName"
                   value={shippingInfo.firstName}
                   onChange={handleShippingChange}
@@ -363,7 +363,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="Last Name"
+                  label={<ZTypography flag="label">Last Name</ZTypography>}
                   name="lastName"
                   value={shippingInfo.lastName}
                   onChange={handleShippingChange}
@@ -374,7 +374,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12}>
                 <ZTextField
-                  label="Address"
+                  label={<ZTypography flag="label">Address</ZTypography>}
                   name="address"
                   value={shippingInfo.address}
                   onChange={handleShippingChange}
@@ -385,7 +385,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="City"
+                  label={<ZTypography flag="label">City</ZTypography>}
                   name="city"
                   value={shippingInfo.city}
                   onChange={handleShippingChange}
@@ -396,7 +396,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="Zip Code"
+                  label={<ZTypography flag="label">Zip Code</ZTypography>}
                   name="zipCode"
                   value={shippingInfo.zipCode}
                   onChange={handleShippingChange}
@@ -407,7 +407,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="State"
+                  label={<ZTypography flag="label">State</ZTypography>}
                   name="state"
                   value={shippingInfo.state}
                   onChange={handleShippingChange}
@@ -418,7 +418,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label="Country"
+                  label={<ZTypography flag="label">Country</ZTypography>}
                   name="country"
                   value={shippingInfo.country}
                   onChange={handleShippingChange}
@@ -433,7 +433,7 @@ const Payment = () => {
       case 2:
         return (
           <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-            <ZTypography variant="h6" gutterBottom>
+            <ZTypography flag="subheading" variant="h6" gutterBottom>
               Payment Method
             </ZTypography>
             <FormControl
@@ -441,24 +441,38 @@ const Payment = () => {
               sx={{ mb: 2 }}
               error={!!errors.payment.cardType}
             >
-              <InputLabel>Card Type</InputLabel>
+              <InputLabel>
+                <ZTypography flag="label">Card Type</ZTypography>
+              </InputLabel>
               <Select
-                label="Card Type"
+                label={<ZTypography flag="label">Card Type</ZTypography>}
                 name="cardType"
                 value={paymentInfo.cardType}
                 onChange={handlePaymentChange}
               >
-                <MenuItem value="visa">Visa</MenuItem>
-                <MenuItem value="mastercard">Mastercard</MenuItem>
-                <MenuItem value="amex">American Express</MenuItem>
-                <MenuItem value="discover">Discover</MenuItem>
+                <MenuItem value="visa">
+                  <ZTypography flag="value">Visa</ZTypography>
+                </MenuItem>
+                <MenuItem value="mastercard">
+                  <ZTypography flag="value">Mastercard</ZTypography>
+                </MenuItem>
+                <MenuItem value="amex">
+                  <ZTypography flag="value">American Express</ZTypography>
+                </MenuItem>
+                <MenuItem value="discover">
+                  <ZTypography flag="value">Discover</ZTypography>
+                </MenuItem>
               </Select>
               {errors.payment.cardType && (
-                <FormHelperText>{errors.payment.cardType}</FormHelperText>
+                <FormHelperText>
+                  <ZTypography flag="error">
+                    {errors.payment.cardType}
+                  </ZTypography>
+                </FormHelperText>
               )}
             </FormControl>
             <ZTextField
-              label="Card Number"
+              label={<ZTypography flag="label">Card Number</ZTypography>}
               name="cardNumber"
               value={paymentInfo.cardNumber}
               onChange={handlePaymentChange}
@@ -471,7 +485,7 @@ const Payment = () => {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <ZTextField
-                  label="Expiry Date"
+                  label={<ZTypography flag="label">Expiry Date</ZTypography>}
                   name="expiryDate"
                   value={paymentInfo.expiryDate}
                   onChange={handlePaymentChange}
@@ -483,7 +497,7 @@ const Payment = () => {
               </Grid>
               <Grid item xs={6}>
                 <ZTextField
-                  label="CVV"
+                  label={<ZTypography flag="label">CVV</ZTypography>}
                   name="cvv"
                   value={paymentInfo.cvv}
                   onChange={handlePaymentChange}
@@ -530,14 +544,16 @@ const Payment = () => {
         <ArrowBackIcon />
       </IconButton>
 
-      <ZTypography variant="h4" gutterBottom>
+      <ZTypography flag="mainheader" variant="h4" gutterBottom>
         Checkout
       </ZTypography>
 
       <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
         {steps.map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel>
+              <ZTypography flag="label">{label}</ZTypography>
+            </StepLabel>
           </Step>
         ))}
       </Stepper>
@@ -547,12 +563,12 @@ const Payment = () => {
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {activeStep !== 0 && (
           <ZButton onClick={handleBack} sx={{ mr: 2 }}>
-            Back
+            <ZTypography flag="label">Back</ZTypography>
           </ZButton>
         )}
         {activeStep !== steps.length - 1 ? (
           <ZButton variant="contained" onClick={handleNext}>
-            Next
+            <ZTypography flag="label">Next</ZTypography>
           </ZButton>
         ) : (
           <ZButton
@@ -562,7 +578,7 @@ const Payment = () => {
             startIcon={<PaymentIcon />}
             onClick={handlePlaceOrder}
           >
-            Place Order
+            <ZTypography flag="label">Place Order</ZTypography>
           </ZButton>
         )}
       </Box>

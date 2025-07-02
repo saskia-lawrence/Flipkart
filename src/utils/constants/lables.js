@@ -9,7 +9,26 @@ export const lable = {
     error: "error",
     success: "success",
   },
+
   dashboard: {
+    notifications: {
+      newOrder: "New order received",
+      paymentProcessed: "Payment processed",
+      newCustomer: "New customer registered",
+    },
+    menuItems: {
+      dashboard: "Dashboard",
+      products: "Products",
+      orders: "Orders",
+      customers: "Customers",
+      settings: "Settings",
+    },
+    confirmLogout: {
+      title: "Confirm Logout",
+      message: "Are you sure you want to logout?",
+      cancel: "Cancel",
+      logout: "Logout",
+    },
     appName: "Zoi Cart",
     welcome: "Welcome back, {name}!",
     dashboardOverview: "Here's what's happening with your store today.",

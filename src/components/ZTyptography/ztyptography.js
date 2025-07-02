@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography as MuiTypography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { fonts } from "../../utils/constants/font";
 import colors from "../../utils/constants/colors";
 import { lable } from "../../utils/constants/lables";
@@ -35,15 +35,15 @@ function ZTypography(props) {
       : color || colors.secondaryText;
 
   return (
-    <MuiTypography
-      fontSize={fontSize || computedFontSize}
-      color={color || computedColor}
+    <Typography
+      fontSize={computedFontSize}
+      color={computedColor}
       fontFamily={fontFamily || fonts.family.primary}
       lineHeight={lineHeight || fonts.lineHeight.normal}
-      {...props} // Spread other props
+      {...props}
     >
       {labelText || children}
-    </MuiTypography>
+    </Typography>
   );
 }
 

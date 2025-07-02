@@ -12,6 +12,12 @@ import PageLayout from "../container/Flipkart/PageLayout/pagelayout";
 import OrderConfirmation from "../container/Flipkart/OrderConfirmation/orderconfirmation";
 import Orders from "../container/Flipkart/Orders/orders";
 import MensFashion from "../container/Flipkart/MensFashion/mensfashion";
+import Kidsfashion from "../container/Flipkart/KidsFashion/kidsfashion";
+import Electronics from "../container/Flipkart/Electronics/electronics";
+import Homeliving from "../container/Flipkart/HomeLiving/homeliving";
+import Beautyproduct from "../container/Flipkart/BeautyProduct/beautyproduct";
+import Food from "../container/Flipkart/Food/food";
+import Techgadgets from "../container/Flipkart/TechGadgets/techgadgets";
 
 function Routing() {
   return (
@@ -28,6 +34,12 @@ function Routing() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/womens" element={<WomensFashion />} />
           <Route path="/mens" element={<MensFashion />} />
+          <Route path="/kids" element={<Kidsfashion />} />
+          <Route path="/electronics" element={<Electronics />} />
+          <Route path="/homeliving" element={<Homeliving />} />
+          <Route path="/beauty" element={<Beautyproduct />} />
+          <Route path="/food" element={<Food />} />
+          <Route path="/tech" element={<Techgadgets />} />
           <Route path="/orderconfirmation" element={<OrderConfirmation />} />
           <Route path="/orders" element={<Orders />} />
         </Route>

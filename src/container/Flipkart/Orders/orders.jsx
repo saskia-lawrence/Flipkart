@@ -44,6 +44,7 @@ import {
 import ZToasterMsg from "../../../components/ZTosterMessage/ztostermsg";
 import ZButton from "../../../components/ZButton/zbutton";
 import ZTypography from "../../../components/ZTyptography/ztyptography";
+
 const Orders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -172,7 +173,7 @@ const Orders = () => {
         <IconButton onClick={handleBackClick} sx={{ mr: 2 }}>
           <ArrowBack />
         </IconButton>
-        <ZTypography variant="h4" fontWeight="bold">
+        <ZTypography flag="mainheader" variant="h4" fontWeight="bold">
           My Orders
         </ZTypography>
       </Box>
@@ -183,31 +184,31 @@ const Orders = () => {
         sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
       >
         <Tab
-          label="All Orders"
+          label={<ZTypography flag="label">All Orders</ZTypography>}
           value="all"
           icon={<ShoppingBag />}
           iconPosition="start"
         />
         <Tab
-          label="Processing"
+          label={<ZTypography flag="label">Processing</ZTypography>}
           value="processing"
           icon={<Pending />}
           iconPosition="start"
         />
         <Tab
-          label="Shipped"
+          label={<ZTypography flag="label">Shipped</ZTypography>}
           value="shipped"
           icon={<LocalShipping />}
           iconPosition="start"
         />
         <Tab
-          label="Delivered"
+          label={<ZTypography flag="label">Delivered</ZTypography>}
           value="delivered"
           icon={<CheckCircle />}
           iconPosition="start"
         />
         <Tab
-          label="Cancelled"
+          label={<ZTypography flag="label">Cancelled</ZTypography>}
           value="cancelled"
           icon={<Cancel />}
           iconPosition="start"
@@ -216,7 +217,7 @@ const Orders = () => {
 
       {filteredOrders.length === 0 ? (
         <Paper elevation={3} sx={{ p: 4, textAlign: "center" }}>
-          <ZTypography variant="h6" gutterBottom>
+          <ZTypography flag="subheading" variant="h6" gutterBottom>
             {tabValue === "all"
               ? "You haven't placed any orders yet"
               : `No ${tabValue} orders found`}
@@ -227,7 +228,7 @@ const Orders = () => {
             onClick={() => navigate("/")}
             startIcon={<ShoppingBag />}
           >
-            Continue Shopping
+            <ZTypography flag="label">Continue Shopping</ZTypography>
           </ZButton>
         </Paper>
       ) : (
@@ -259,13 +260,13 @@ const Orders = () => {
                   >
                     <Box>
                       <ZTypography
+                        flag="mainheader"
                         variant="h6"
                         fontWeight="bold"
-                        color="primary"
                       >
                         Order #: {order.id}
                       </ZTypography>
-                      <ZTypography variant="subtitle1" color="text.secondary">
+                      <ZTypography flag="label" variant="subtitle1">
                         Placed on: {formatDate(order.date)}
                       </ZTypography>
                     </Box>
@@ -274,7 +275,11 @@ const Orders = () => {
 
                   {order.status !== "cancelled" && (
                     <Box sx={{ mb: 2 }}>
-                      <ZTypography variant="subtitle1" fontWeight={500}>
+                      <ZTypography
+                        flag="subheading"
+                        variant="subtitle1"
+                        fontWeight={500}
+                      >
                         <LocalShipping
                           sx={{ verticalAlign: "middle", mr: 1 }}
                         />
@@ -284,7 +289,7 @@ const Orders = () => {
                         {formatDate(order.deliveryDate)}
                       </ZTypography>
                       {order.trackingNumber && (
-                        <ZTypography variant="body2" color="text.secondary">
+                        <ZTypography flag="value" variant="body2">
                           Tracking #: {order.trackingNumber} ({order.carrier})
                         </ZTypography>
                       )}
@@ -294,6 +299,7 @@ const Orders = () => {
                   <Divider sx={{ my: 2 }} />
 
                   <ZTypography
+                    flag="subheading"
                     variant="subtitle2"
                     gutterBottom
                     fontWeight="bold"
@@ -304,11 +310,21 @@ const Orders = () => {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Product</TableCell>
-                          <TableCell align="right">Price</TableCell>
-                          <TableCell align="right">Quantity</TableCell>
-                          <TableCell align="right">Total</TableCell>
-                          <TableCell align="right">Rating</TableCell>
+                          <TableCell>
+                            <ZTypography flag="label">Product</ZTypography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <ZTypography flag="label">Price</ZTypography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <ZTypography flag="label">Quantity</ZTypography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <ZTypography flag="label">Total</ZTypography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <ZTypography flag="label">Rating</ZTypography>
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -323,17 +339,25 @@ const Orders = () => {
                                   alt={product.name}
                                   sx={{ width: 60, height: 60, mr: 2 }}
                                 />
-                                <ZTypography>{product.name}</ZTypography>
+                                <ZTypography flag="value">
+                                  {product.name}
+                                </ZTypography>
                               </Box>
                             </TableCell>
                             <TableCell align="right">
-                              ${product.price.toFixed(2)}
+                              <ZTypography flag="value">
+                                ${product.price.toFixed(2)}
+                              </ZTypography>
                             </TableCell>
                             <TableCell align="right">
-                              {product.quantity}
+                              <ZTypography flag="value">
+                                {product.quantity}
+                              </ZTypography>
                             </TableCell>
                             <TableCell align="right">
-                              ${(product.price * product.quantity).toFixed(2)}
+                              <ZTypography flag="value">
+                                ${(product.price * product.quantity).toFixed(2)}
+                              </ZTypography>
                             </TableCell>
                             <TableCell align="right">
                               {product.rating ? (
@@ -341,6 +365,7 @@ const Orders = () => {
                                   {renderStars(product.rating)}
                                   {product.review && (
                                     <ZTypography
+                                      flag="value"
                                       variant="caption"
                                       display="block"
                                     >
@@ -356,7 +381,9 @@ const Orders = () => {
                                     navigate(`/review/${product.id}`)
                                   }
                                 >
-                                  Add Review
+                                  <ZTypography flag="label">
+                                    Add Review
+                                  </ZTypography>
                                 </ZButton>
                               )}
                             </TableCell>
@@ -371,6 +398,7 @@ const Orders = () => {
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <ZTypography
+                        flag="subheading"
                         variant="subtitle2"
                         gutterBottom
                         fontWeight="bold"
@@ -381,17 +409,24 @@ const Orders = () => {
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
                         <Home sx={{ mr: 1, color: "action.active" }} />
-                        <ZTypography>{order.shippingAddress.name}</ZTypography>
+                        <ZTypography flag="value">
+                          {order.shippingAddress.name}
+                        </ZTypography>
                       </Box>
-                      <ZTypography>{order.shippingAddress.address}</ZTypography>
-                      <ZTypography>
+                      <ZTypography flag="value">
+                        {order.shippingAddress.address}
+                      </ZTypography>
+                      <ZTypography flag="value">
                         {order.shippingAddress.city},{" "}
                         {order.shippingAddress.zip}
                       </ZTypography>
-                      <ZTypography>{order.shippingAddress.country}</ZTypography>
+                      <ZTypography flag="value">
+                        {order.shippingAddress.country}
+                      </ZTypography>
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <ZTypography
+                        flag="subheading"
                         variant="subtitle2"
                         gutterBottom
                         fontWeight="bold"
@@ -402,9 +437,12 @@ const Orders = () => {
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
                         <Payment sx={{ mr: 1, color: "action.active" }} />
-                        <ZTypography>{order.paymentMethod}</ZTypography>
+                        <ZTypography flag="value">
+                          {order.paymentMethod}
+                        </ZTypography>
                       </Box>
                       <ZTypography
+                        flag="subheading"
                         variant="subtitle2"
                         gutterBottom
                         fontWeight="bold"
@@ -419,8 +457,8 @@ const Orders = () => {
                           mb: 1,
                         }}
                       >
-                        <ZTypography>Subtotal:</ZTypography>
-                        <ZTypography>
+                        <ZTypography flag="label">Subtotal:</ZTypography>
+                        <ZTypography flag="value">
                           ${(order.total - 5.99).toFixed(2)}
                         </ZTypography>
                       </Box>
@@ -431,8 +469,8 @@ const Orders = () => {
                           mb: 1,
                         }}
                       >
-                        <ZTypography>Shipping:</ZTypography>
-                        <ZTypography>$5.99</ZTypography>
+                        <ZTypography flag="label">Shipping:</ZTypography>
+                        <ZTypography flag="value">$5.99</ZTypography>
                       </Box>
                       <Divider sx={{ my: 1 }} />
                       <Box
@@ -442,10 +480,18 @@ const Orders = () => {
                           mb: 1,
                         }}
                       >
-                        <ZTypography variant="subtitle1" fontWeight="bold">
+                        <ZTypography
+                          flag="subheading"
+                          variant="subtitle1"
+                          fontWeight="bold"
+                        >
                           Total:
                         </ZTypography>
-                        <ZTypography variant="subtitle1" fontWeight="bold">
+                        <ZTypography
+                          flag="subheading"
+                          variant="subtitle1"
+                          fontWeight="bold"
+                        >
                           ${order.total.toFixed(2)}
                         </ZTypography>
                       </Box>
@@ -464,7 +510,7 @@ const Orders = () => {
                       onClick={() => handleOpenCancelDialog(order)}
                       sx={{ mr: 2 }}
                     >
-                      Cancel Order
+                      <ZTypography flag="label">Cancel Order</ZTypography>
                     </ZButton>
                   )}
                   {order.status === "shipped" && (
@@ -482,7 +528,7 @@ const Orders = () => {
                       }
                       sx={{ mr: 2 }}
                     >
-                      Track Package
+                      <ZTypography flag="label">Track Package</ZTypography>
                     </ZButton>
                   )}
                   <ZButton
@@ -491,7 +537,7 @@ const Orders = () => {
                     startIcon={<Assignment />}
                     onClick={() => navigate(`/order/${order.id}`)}
                   >
-                    Order Details
+                    <ZTypography flag="label">Order Details</ZTypography>
                   </ZButton>
                 </CardActions>
               </Card>
@@ -504,16 +550,20 @@ const Orders = () => {
         open={openCancelDialog}
         onClose={() => setOpenCancelDialog(false)}
       >
-        <DialogTitle>Cancel Order</DialogTitle>
+        <DialogTitle>
+          <ZTypography flag="mainheader">Cancel Order</ZTypography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to cancel order #{selectedOrder?.id}? This
-            action cannot be undone.
+            <ZTypography flag="value">
+              Are you sure you want to cancel order #{selectedOrder?.id}? This
+              action cannot be undone.
+            </ZTypography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <ZButton onClick={() => setOpenCancelDialog(false)}>
-            No, Keep It
+            <ZTypography flag="label">No, Keep It</ZTypography>
           </ZButton>
           <ZButton
             onClick={() => handleCancelOrder(selectedOrder?.id)}
@@ -521,7 +571,7 @@ const Orders = () => {
             variant="contained"
             autoFocus
           >
-            Yes, Cancel Order
+            <ZTypography flag="label">Yes, Cancel Order</ZTypography>
           </ZButton>
         </DialogActions>
       </Dialog>

@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Container,
-  Typography,
   Box,
   Button,
   List,
@@ -17,6 +16,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
+import ZTypography from "../../../components/ZTyptography/ztyptography";
 
 const OrderConfirmation = () => {
   const { state } = useLocation();
@@ -74,19 +74,19 @@ const OrderConfirmation = () => {
           }}
         >
           <CheckCircleIcon color="success" sx={{ fontSize: 80, mb: 2 }} />
-          <Typography variant="h4" gutterBottom>
+          <ZTypography flag="mainheader" variant="h4" gutterBottom>
             Order Placed Successfully!
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
+          </ZTypography>
+          <ZTypography flag="subheading" variant="body1">
             Thank you for your purchase
-          </Typography>
+          </ZTypography>
         </Box>
 
         {/* Order Summary Section */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+          <ZTypography flag="mainheader" variant="h6" gutterBottom>
             Order Summary
-          </Typography>
+          </ZTypography>
           <List>
             {products.map((item) => (
               <ListItem key={item.id} divider>
@@ -99,58 +99,58 @@ const OrderConfirmation = () => {
                   />
                 </ListItemAvatar>
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="body1" fontWeight="medium">
+                  <ZTypography flag="subheading" variant="body1">
                     {item.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  </ZTypography>
+                  <ZTypography flag="label" variant="body2">
                     Quantity: {item.quantity}
-                  </Typography>
+                  </ZTypography>
                 </Box>
-                <Typography variant="body1" fontWeight="bold">
+                <ZTypography flag="subheading" variant="body1">
                   ${(item.price * item.quantity).toFixed(2)}
-                </Typography>
+                </ZTypography>
               </ListItem>
             ))}
           </List>
           <Divider sx={{ my: 2 }} />
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="h6" fontWeight="bold">
+            <ZTypography flag="mainheader" variant="h6">
               Order Total:
-            </Typography>
-            <Typography variant="h6" fontWeight="bold">
+            </ZTypography>
+            <ZTypography flag="mainheader" variant="h6">
               ${calculateTotal().toFixed(2)}
-            </Typography>
+            </ZTypography>
           </Box>
         </Box>
 
         {/* Shipping Information */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+          <ZTypography flag="mainheader" variant="h6" gutterBottom>
             Shipping Information
-          </Typography>
-          <Typography>
+          </ZTypography>
+          <ZTypography flag="value">
             {shippingInfo.firstName} {shippingInfo.lastName}
-          </Typography>
-          <Typography>{shippingInfo.address}</Typography>
-          <Typography>
+          </ZTypography>
+          <ZTypography flag="value">{shippingInfo.address}</ZTypography>
+          <ZTypography flag="value">
             {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}
-          </Typography>
-          <Typography>{shippingInfo.country}</Typography>
+          </ZTypography>
+          <ZTypography flag="value">{shippingInfo.country}</ZTypography>
         </Box>
 
         {/* Payment Information */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+          <ZTypography flag="mainheader" variant="h6" gutterBottom>
             Payment Method
-          </Typography>
-          <Typography>
+          </ZTypography>
+          <ZTypography flag="value">
             {paymentInfo?.cardType
               ? `${
                   paymentInfo.cardType.charAt(0).toUpperCase() +
                   paymentInfo.cardType.slice(1)
                 } ending in ${paymentInfo.cardNumber?.slice(-4) || "****"}`
               : "Payment information not available"}
-          </Typography>
+          </ZTypography>
         </Box>
 
         <Box
@@ -168,7 +168,7 @@ const OrderConfirmation = () => {
             onClick={handleContinueShopping}
             sx={{ px: 4 }}
           >
-            Continue Shopping
+            <ZTypography flag="label">Continue Shopping</ZTypography>
           </Button>
           <Button
             variant="outlined"
@@ -176,7 +176,7 @@ const OrderConfirmation = () => {
             onClick={() => navigate("/orders")}
             sx={{ px: 4 }}
           >
-            View Order History
+            <ZTypography flag="label">View Order History</ZTypography>
           </Button>
         </Box>
       </Paper>

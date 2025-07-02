@@ -40,30 +40,7 @@ import {
 } from "@mui/icons-material";
 import ZTypography from "../../../components/ZTyptography/ztyptography";
 import ZButton from "../../../components/ZButton/zbutton";
-
-// Constants and labels
-const lable = {
-  dashboard: {
-    notifications: {
-      newOrder: "New order received",
-      paymentProcessed: "Payment processed",
-      newCustomer: "New customer registered",
-    },
-    menuItems: {
-      dashboard: "Dashboard",
-      products: "Products",
-      orders: "Orders",
-      customers: "Customers",
-      settings: "Settings",
-    },
-    confirmLogout: {
-      title: "Confirm Logout",
-      message: "Are you sure you want to logout?",
-      cancel: "Cancel",
-      logout: "Logout",
-    },
-  },
-};
+import { lable } from "../../../utils/constants/lables";
 
 const AppBarOffset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -281,6 +258,7 @@ class PageLayout extends React.Component {
               </IconButton>
             )}
             <ZTypography
+              flag="mainheader"
               variant="h6"
               noWrap
               component="div"
@@ -354,7 +332,8 @@ class PageLayout extends React.Component {
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <MenuItem onClick={this.handleProfileClick} sx={{ py: 1.5 }}>
-                <Avatar /> Profile
+                <Avatar />
+                <ZTypography flag="label">Profile</ZTypography>
               </MenuItem>
               <Divider />
               <MenuItem
@@ -369,10 +348,9 @@ class PageLayout extends React.Component {
                 <ListItemIcon>
                   <Logout fontSize="small" color="error" />
                 </ListItemIcon>
-                <ListItemText
-                  primary="Logout"
-                  primaryTypographyProps={{ color: "error" }}
-                />
+                <ZTypography flag="label" color="error">
+                  Logout
+                </ZTypography>
               </MenuItem>
             </Menu>
           </Toolbar>
@@ -405,7 +383,7 @@ class PageLayout extends React.Component {
                   onClick={() => this.props.navigate(item.path)}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
+                  <ZTypography flag="label">{item.text}</ZTypography>
                 </ListItem>
               ))}
             </List>
@@ -430,7 +408,7 @@ class PageLayout extends React.Component {
 
         {/* Add the Footer */}
         <Footer>
-          <ZTypography variant="body2">
+          <ZTypography flag="label">
             © {new Date().getFullYear()} Zoi Cart - All Rights Reserved
           </ZTypography>
           <Box sx={{ mt: 1 }}>
@@ -439,21 +417,21 @@ class PageLayout extends React.Component {
               size="small"
               onClick={() => this.props.navigate("/terms")}
             >
-              Terms of Service
+              <ZTypography flag="label">Terms of Service</ZTypography>
             </ZButton>
             <ZButton
               variant="text"
               size="small"
               onClick={() => this.props.navigate("/privacy")}
             >
-              Privacy Policy
+              <ZTypography flag="label">Privacy Policy</ZTypography>
             </ZButton>
             <ZButton
               variant="text"
               size="small"
               onClick={() => this.props.navigate("/contact")}
             >
-              Contact Us
+              <ZTypography flag="label">Contact Us</ZTypography>
             </ZButton>
           </Box>
         </Footer>
@@ -466,20 +444,22 @@ class PageLayout extends React.Component {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            <ZTypography variant="h6">
+            <ZTypography flag="mainheader">
               {lable.dashboard.confirmLogout.title}
             </ZTypography>
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <ZTypography variant="body1">
+              <ZTypography flag="label">
                 {lable.dashboard.confirmLogout.message}
               </ZTypography>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <ZButton variant="outlined" onClick={this.handleLogoutCancel}>
-              {lable.dashboard.confirmLogout.cancel}
+              <ZTypography flag="label">
+                {lable.dashboard.confirmLogout.cancel}
+              </ZTypography>
             </ZButton>
             <ZButton
               variant="contained"
@@ -488,7 +468,9 @@ class PageLayout extends React.Component {
               autoFocus
               startIcon={<Logout />}
             >
-              {lable.dashboard.confirmLogout.logout}
+              <ZTypography flag="label">
+                {lable.dashboard.confirmLogout.logout}
+              </ZTypography>
             </ZButton>
           </DialogActions>
         </Dialog>
@@ -512,7 +494,7 @@ class PageLayout extends React.Component {
               justifyContent="space-between"
               alignItems="center"
             >
-              <ZTypography variant="h6">My Profile</ZTypography>
+              <ZTypography flag="mainheader">My Profile</ZTypography>
               <IconButton onClick={this.handleProfileClose}>
                 <ChevronLeft />
               </IconButton>
@@ -521,51 +503,47 @@ class PageLayout extends React.Component {
           <DialogContent>
             <Box sx={{ p: 2 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <ZTypography variant="h6" sx={{ mb: 2 }}>
+                <ZTypography flag="mainheader" sx={{ mb: 2 }}>
                   Welcome, {this.state.user.name}!
                 </ZTypography>
 
                 <Box>
-                  <ZTypography variant="subtitle2" color="textSecondary">
+                  <ZTypography flag="label" color="textSecondary">
                     User Name
                   </ZTypography>
-                  <ZTypography variant="body1">
-                    {this.state.user.name}
-                  </ZTypography>
+                  <ZTypography flag="value">{this.state.user.name}</ZTypography>
                 </Box>
 
                 <Box>
-                  <ZTypography variant="subtitle2" color="textSecondary">
+                  <ZTypography flag="label" color="textSecondary">
                     Email
                   </ZTypography>
-                  <ZTypography variant="body1">
+                  <ZTypography flag="value">
                     {this.state.user.email}
                   </ZTypography>
                 </Box>
 
                 <Box>
-                  <ZTypography variant="subtitle2" color="textSecondary">
+                  <ZTypography flag="label" color="textSecondary">
                     Mobile
                   </ZTypography>
-                  <ZTypography variant="body1">
+                  <ZTypography flag="value">
                     {this.state.user.mobile || "Not provided"}
                   </ZTypography>
                 </Box>
 
                 <Box>
-                  <ZTypography variant="subtitle2" color="textSecondary">
+                  <ZTypography flag="label" color="textSecondary">
                     Role
                   </ZTypography>
-                  <ZTypography variant="body1">
-                    {this.state.user.role}
-                  </ZTypography>
+                  <ZTypography flag="value">{this.state.user.role}</ZTypography>
                 </Box>
               </Box>
             </Box>
           </DialogContent>
           <DialogActions>
             <ZButton variant="contained" onClick={this.handleProfileClose}>
-              Close
+              <ZTypography flag="label">Close</ZTypography>
             </ZButton>
           </DialogActions>
         </Dialog>

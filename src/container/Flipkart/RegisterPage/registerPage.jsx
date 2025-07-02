@@ -290,7 +290,7 @@ class RegisterPage extends React.Component {
             </IconButton>
 
             <ZTypography
-              variant="h4"
+              flag="mainheader"
               component="h1"
               gutterBottom
               sx={{
@@ -420,23 +420,27 @@ class RegisterPage extends React.Component {
                   color: "white",
                 }}
               >
-                {lable.register.submitButton}
+                <ZTypography flag="label" color="white">
+                  {lable.register.submitButton}
+                </ZTypography>
               </ZButton>
 
-              <ZTypography
-                variant="body2"
-                color="text.secondary"
-                sx={{ textAlign: "center" }}
-              >
-                {lable.register.agreementText}{" "}
-                <Link href="#" underline="hover">
-                  {lable.login.privacyPolicy}
-                </Link>{" "}
-                {lable.login.and}{" "}
-                <Link href="#" underline="hover">
-                  {lable.login.cookiePolicy}
-                </Link>
-              </ZTypography>
+              <Box sx={{ textAlign: "center" }}>
+                <ZTypography flag="label" color="textSecondary">
+                  {lable.register.agreementText}{" "}
+                  <Link href="#" underline="hover">
+                    <ZTypography flag="label" color="primary">
+                      {lable.login.privacyPolicy}
+                    </ZTypography>
+                  </Link>{" "}
+                  {lable.login.and}{" "}
+                  <Link href="#" underline="hover">
+                    <ZTypography flag="label" color="primary">
+                      {lable.login.cookiePolicy}
+                    </ZTypography>
+                  </Link>
+                </ZTypography>
+              </Box>
             </Box>
           </Paper>
         </Container>

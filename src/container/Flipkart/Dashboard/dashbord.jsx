@@ -36,6 +36,10 @@ import menFashion from "../../../utils/assets/images/men-fashion.jpg";
 import kidsFashion from "../../../utils/assets/images/kids-fashion.jpg";
 import electronics from "../../../utils/assets/images/electronics.jpg";
 import homeDecor from "../../../utils/assets/images/home-decor.jpg";
+import tech1 from "../../../utils/assets/images/tech1.jpg";
+import tech5 from "../../../utils/assets/images/tech5.jpg";
+import food8 from "../../../utils/assets/images/food8.jpg";
+import handback from "../../../utils/assets/images/handback.jpg";
 import beautyProducts from "../../../utils/assets/images/beauty-products.jpg";
 import food from "../../../utils/assets/images/food.jpg";
 import gadgets from "../../../utils/assets/images/gadgets.jpg";
@@ -108,6 +112,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      cart: JSON.parse(localStorage.getItem("cart")) || [],
       categories: [
         {
           id: 1,
@@ -221,7 +226,7 @@ class Dashboard extends React.Component {
           id: 1,
           name: "Wireless Headphones",
           price: 129.99,
-          image: electronics,
+          image: tech1,
           rating: 4,
           category: "Electronics",
         },
@@ -229,7 +234,7 @@ class Dashboard extends React.Component {
           id: 2,
           name: "Designer Handbag",
           price: 199.99,
-          image: womenFashion,
+          image: handback,
           rating: 5,
           category: "Fashion",
         },
@@ -237,7 +242,7 @@ class Dashboard extends React.Component {
           id: 3,
           name: "Smart Watch",
           price: 159.99,
-          image: gadgets,
+          image: tech5,
           rating: 4,
           category: "Electronics",
         },
@@ -253,7 +258,7 @@ class Dashboard extends React.Component {
           id: 5,
           name: "Gourmet Coffee Pack",
           price: 24.99,
-          image: food,
+          image: food8,
           rating: 5,
           category: "Food",
         },
@@ -286,6 +291,7 @@ class Dashboard extends React.Component {
       toastMessage: "",
       toastSeverity: "",
     };
+    this.handleCartUpdate = this.handleCartUpdate.bind(this);
   }
 
   showToast = (message, severity = "success") => {
@@ -298,7 +304,29 @@ class Dashboard extends React.Component {
   };
 
   handleAddToCart = (product) => {
-    this.showToast(`${product.name} added to cart!`);
+    const { cart } = this.state;
+
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      const updatedCart = cart.map((item) =>
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+      this.setState({ cart: updatedCart }, () => {
+        this.saveCartToLocalStorage();
+        this.showToast(`${product.name} quantity increased in cart!`);
+      });
+    } else {
+      const updatedCart = [...cart, { ...product, quantity: 1 }];
+      this.setState({ cart: updatedCart }, () => {
+        this.saveCartToLocalStorage();
+        this.showToast(`${product.name} added to cart!`);
+      });
+    }
+  };
+
+  saveCartToLocalStorage = () => {
+    localStorage.setItem("cart", JSON.stringify(this.state.cart));
   };
 
   handleCategoryClick = (categoryId, categoryName) => {
@@ -310,11 +338,48 @@ class Dashboard extends React.Component {
       this.props.navigate("/mens", {
         state: { user: this.props.location?.state?.user },
       });
+    } else if (categoryName === "Kids & Baby") {
+      this.props.navigate("/kids", {
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Electronics") {
+      this.props.navigate("/electronics", {
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Home & Living") {
+      this.props.navigate("/homeliving", {
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Beauty Products") {
+      this.props.navigate("/beauty", {
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Gourmet Food") {
+      this.props.navigate("/food", {
+        state: { user: this.props.location?.state?.user },
+      });
+    } else if (categoryName === "Tech Gadgets") {
+      this.props.navigate("/tech", {
+        state: { user: this.props.location?.state?.user },
+      });
     } else {
       this.props.navigate(`/products?category=${categoryId}`, {
         state: { user: this.props.location?.state?.user },
       });
     }
+  };
+
+  componentDidMount() {
+    window.addEventListener("cartUpdated", this.handleCartUpdate);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("cartUpdated", this.handleCartUpdate);
+  }
+
+  handleCartUpdate = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    this.setState({ cart });
   };
 
   render() {
@@ -335,7 +400,7 @@ class Dashboard extends React.Component {
       slidesToShow: 3,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 3000,
+      autoplaySpeed: 1000,
       pauseOnHover: true,
       nextArrow: <SampleNextArrow />,
       prevArrow: <SamplePrevArrow />,
@@ -399,23 +464,59 @@ class Dashboard extends React.Component {
             </ZTypography>
           </Paper>
 
-          {/* Search Bar */}
-          <Box sx={{ px: 3 }}>
-            <ZTextField
-              fullWidth
-              placeholder="Search products..."
-              variant="outlined"
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
+          <Box
+            sx={{
+              position: "fixed",
+              top: 16,
+              right: 16,
+              zIndex: 1000,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <ZButton
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                this.props.navigate("/cart", {
+                  state: { user: this.props.location?.state?.user },
+                })
+              }
+              sx={{
+                borderRadius: "50%",
+                minWidth: "40px",
+                height: "40px",
+                padding: 0,
+                position: "relative",
               }}
-            />
+            >
+              <LocalMall />
+              {this.state.cart.length > 0 && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    backgroundColor: "error.main",
+                    color: "white",
+                    borderRadius: "50%",
+                    width: "20px",
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.75rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {this.state.cart.reduce(
+                    (total, item) => total + item.quantity,
+                    0
+                  )}
+                </Box>
+              )}
+            </ZButton>
           </Box>
-
           {/* Special Offers Section with Carousel */}
           <Paper elevation={0} sx={{ p: 3, borderRadius: 2, mt: -3 }}>
             <Box
@@ -541,7 +642,6 @@ class Dashboard extends React.Component {
               ))}
             </Slider>
           </Paper>
-
           {/* Categories Section */}
           <Paper elevation={0} sx={{ p: 3, mb: 4, borderRadius: 2, px: 9 }}>
             <Grid container spacing={3}>
@@ -699,7 +799,6 @@ class Dashboard extends React.Component {
               ))}
             </Grid>
           </Paper>
-
           {/* Featured Products Section */}
           <Paper elevation={0} sx={{ p: 3, borderRadius: 2, px: 7 }}>
             <ZTypography

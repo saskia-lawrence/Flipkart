@@ -168,6 +168,7 @@ class OtpVerification extends React.Component {
             </IconButton>
 
             <ZTypography
+              flag="mainheader"
               variant="h4"
               component="h1"
               gutterBottom
@@ -182,6 +183,7 @@ class OtpVerification extends React.Component {
             </ZTypography>
 
             <ZTypography
+              flag="subheading"
               variant="body1"
               component="p"
               gutterBottom
@@ -233,7 +235,7 @@ class OtpVerification extends React.Component {
 
               {isOtpWrong && (
                 <ZTypography
-                  color="error"
+                  flag="error"
                   variant="body2"
                   sx={{ textAlign: "center", mb: 2 }}
                 >
@@ -248,7 +250,7 @@ class OtpVerification extends React.Component {
                 spacing={1}
                 sx={{ mb: 3 }}
               >
-                <ZTypography variant="body2">
+                <ZTypography flag="value" variant="body2">
                   {isTimerRunning
                     ? `${lable.otpVerification.resendTimer} ${timer} ${lable.otpVerification.seconds}`
                     : lable.otpVerification.didNotReceive}
@@ -258,8 +260,11 @@ class OtpVerification extends React.Component {
                     variant="text"
                     onClick={this.handleResendClick}
                     sx={{ minWidth: 0, color: "primary.main" }}
-                    label={lable.otpVerification.resend}
-                  />
+                  >
+                    <ZTypography flag="label">
+                      {lable.otpVerification.resend}
+                    </ZTypography>
+                  </ZButton>
                 )}
               </Stack>
 
@@ -267,7 +272,6 @@ class OtpVerification extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
-                label={lable.otpVerification.confirm}
                 sx={{
                   mt: 3,
                   mb: 2,
@@ -275,7 +279,11 @@ class OtpVerification extends React.Component {
                   backgroundColor: "primary.main",
                   color: "white",
                 }}
-              />
+              >
+                <ZTypography flag="label">
+                  {lable.otpVerification.confirm}
+                </ZTypography>
+              </ZButton>
             </Box>
           </Paper>
         </Container>

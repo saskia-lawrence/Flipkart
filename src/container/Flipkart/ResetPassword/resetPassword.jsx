@@ -163,6 +163,7 @@ class ResetPassword extends React.Component {
             </IconButton>
 
             <ZTypography
+              flag="mainheader"
               variant="h4"
               component="h1"
               gutterBottom
@@ -177,6 +178,7 @@ class ResetPassword extends React.Component {
             </ZTypography>
 
             <ZTypography
+              flag="subheading"
               variant="body1"
               component="p"
               gutterBottom
@@ -194,13 +196,23 @@ class ResetPassword extends React.Component {
                 margin="normal"
                 fullWidth
                 name="Password"
-                label={resetPassword.newPasswordLabel}
+                label={
+                  <ZTypography flag="label">
+                    {resetPassword.newPasswordLabel}
+                  </ZTypography>
+                }
                 type="password"
                 id="Password"
                 autoComplete="new-password"
                 value={this.state.Password}
                 error={!!this.state.errors.Password}
-                helperText={this.state.errors.Password}
+                helperText={
+                  this.state.errors.Password && (
+                    <ZTypography flag="error">
+                      {this.state.errors.Password}
+                    </ZTypography>
+                  )
+                }
                 onChange={(e) => this.handleChange("Password", e.target.value)}
                 sx={{ mb: 2 }}
                 InputProps={{
@@ -214,13 +226,23 @@ class ResetPassword extends React.Component {
                 margin="normal"
                 fullWidth
                 name="ConfirmPassword"
-                label={resetPassword.confirmPasswordLabel}
+                label={
+                  <ZTypography flag="label">
+                    {resetPassword.confirmPasswordLabel}
+                  </ZTypography>
+                }
                 type="password"
                 id="ConfirmPassword"
                 autoComplete="new-password"
                 value={this.state.ConfirmPassword}
                 error={!!this.state.errors.ConfirmPassword}
-                helperText={this.state.errors.ConfirmPassword}
+                helperText={
+                  this.state.errors.ConfirmPassword && (
+                    <ZTypography flag="error">
+                      {this.state.errors.ConfirmPassword}
+                    </ZTypography>
+                  )
+                }
                 onChange={(e) =>
                   this.handleChange("ConfirmPassword", e.target.value)
                 }
@@ -236,11 +258,6 @@ class ResetPassword extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
-                label={
-                  this.state.isLoading
-                    ? resetPassword.processing
-                    : resetPassword.submitButton
-                }
                 disabled={this.state.isLoading}
                 sx={{
                   mt: 3,
@@ -249,7 +266,13 @@ class ResetPassword extends React.Component {
                   backgroundColor: "primary.main",
                   color: "white",
                 }}
-              />
+              >
+                <ZTypography flag="label">
+                  {this.state.isLoading
+                    ? resetPassword.processing
+                    : resetPassword.submitButton}
+                </ZTypography>
+              </ZButton>
             </Box>
           </Paper>
         </Container>

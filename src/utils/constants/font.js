@@ -67,8 +67,4 @@ export const fonts = {
       heading: "28px",
     },
   },
-
-  getFontStack: (type = "primary") => `font-family: ${fonts.family[type]}`,
-  getResponsiveSize: (screenSize, element) =>
-    fonts.responsive[screenSize]?.[element] || fonts.responsive.small[element],
 };
