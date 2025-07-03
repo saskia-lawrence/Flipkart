@@ -212,7 +212,7 @@ class PageLayout extends React.Component {
       {
         text: lable.dashboard.menuItems.products,
         icon: <Inventory />,
-        path: "/dashboard/products",
+        path: "/products",
       },
       {
         text: lable.dashboard.menuItems.orders,

@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Container,
   Box,
-  List,
-  ListItem,
-  Divider,
   Paper,
   IconButton,
   Grid,
@@ -27,6 +24,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Divider,
 } from "@mui/material";
 import {
   ArrowBack,
@@ -35,8 +33,6 @@ import {
   CheckCircle,
   Pending,
   Assignment,
-  Payment,
-  Home,
   ShoppingBag,
   Star,
   StarBorder,
@@ -47,6 +43,9 @@ import ZTypography from "../../../components/ZTyptography/ztyptography";
 
 const Orders = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const newOrderId = state?.newOrderId || null;
+
   const [orders, setOrders] = useState([]);
   const [tabValue, setTabValue] = useState("all");
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
@@ -60,9 +59,34 @@ const Orders = () => {
   useEffect(() => {
     const savedOrders = localStorage.getItem("orders");
     if (savedOrders) {
-      setOrders(JSON.parse(savedOrders));
+      const parsedOrders = JSON.parse(savedOrders);
+
+      // Deduplicate by order ID (keep only the last entry of each ID)
+      const orderMap = new Map();
+      for (let i = parsedOrders.length - 1; i >= 0; i--) {
+        const order = parsedOrders[i];
+        if (!orderMap.has(order.id)) {
+          orderMap.set(order.id, order);
+        }
+      }
+
+      // Optional: persist only unique orders back to localStorage
+      const uniqueOrders = Array.from(orderMap.values()).reverse();
+      localStorage.setItem("orders", JSON.stringify(uniqueOrders));
+      setOrders(uniqueOrders);
     }
   }, []);
+
+  useEffect(() => {
+    if (newOrderId) {
+      showNotification(`Order ${newOrderId} placed successfully!`, "success");
+    }
+  }, [newOrderId]);
+
+  const showNotification = (message, severity) => {
+    setNotification({ show: true, message, severity });
+    setTimeout(() => setNotification({ show: false, message: "" }), 3000);
+  };
 
   const handleCancelOrder = (orderId) => {
     const updatedOrders = orders.map((order) =>
@@ -74,25 +98,27 @@ const Orders = () => {
     showNotification("Order cancelled successfully", "success");
   };
 
-  const showNotification = (message, severity) => {
-    setNotification({ show: true, message, severity });
-    setTimeout(() => setNotification({ show: false, message: "" }), 3000);
-  };
-
   const handleOpenCancelDialog = (order) => {
     setSelectedOrder(order);
     setOpenCancelDialog(true);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+  const handleBackClick = () => navigate(-1);
+
+  const handleTabChange = (_, newValue) => setTabValue(newValue);
+
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-  };
+
+  const filteredOrders =
+    tabValue === "all"
+      ? orders
+      : orders.filter((order) => order.status === tabValue);
 
   const getStatusChip = (status) => {
     switch (status) {
@@ -140,19 +166,6 @@ const Orders = () => {
     }
   };
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
-  const filteredOrders = orders.filter((order) => {
-    if (tabValue === "all") return true;
-    return order.status === tabValue;
-  });
-
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -183,36 +196,21 @@ const Orders = () => {
         onChange={handleTabChange}
         sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab
-          label={<ZTypography flag="label">All Orders</ZTypography>}
-          value="all"
-          icon={<ShoppingBag />}
-          iconPosition="start"
-        />
-        <Tab
-          label={<ZTypography flag="label">Processing</ZTypography>}
-          value="processing"
-          icon={<Pending />}
-          iconPosition="start"
-        />
-        <Tab
-          label={<ZTypography flag="label">Shipped</ZTypography>}
-          value="shipped"
-          icon={<LocalShipping />}
-          iconPosition="start"
-        />
-        <Tab
-          label={<ZTypography flag="label">Delivered</ZTypography>}
-          value="delivered"
-          icon={<CheckCircle />}
-          iconPosition="start"
-        />
-        <Tab
-          label={<ZTypography flag="label">Cancelled</ZTypography>}
-          value="cancelled"
-          icon={<Cancel />}
-          iconPosition="start"
-        />
+        {[
+          { label: "All Orders", value: "all", icon: <ShoppingBag /> },
+          { label: "Processing", value: "processing", icon: <Pending /> },
+          { label: "Shipped", value: "shipped", icon: <LocalShipping /> },
+          { label: "Delivered", value: "delivered", icon: <CheckCircle /> },
+          { label: "Cancelled", value: "cancelled", icon: <Cancel /> },
+        ].map(({ label, value, icon }) => (
+          <Tab
+            key={value}
+            label={<ZTypography flag="label">{label}</ZTypography>}
+            value={value}
+            icon={icon}
+            iconPosition="start"
+          />
+        ))}
       </Tabs>
 
       {filteredOrders.length === 0 ? (
@@ -239,6 +237,8 @@ const Orders = () => {
                 elevation={3}
                 sx={{
                   borderRadius: 2,
+                  border:
+                    order.id === newOrderId ? "3px solid #1976d2" : undefined,
                   borderLeft:
                     order.status === "delivered"
                       ? "4px solid #4caf50"
@@ -254,77 +254,45 @@ const Orders = () => {
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
                       mb: 2,
                     }}
                   >
                     <Box>
-                      <ZTypography
-                        flag="mainheader"
-                        variant="h6"
-                        fontWeight="bold"
-                      >
+                      <ZTypography flag="mainheader" fontWeight="bold">
                         Order #: {order.id}
                       </ZTypography>
-                      <ZTypography flag="label" variant="subtitle1">
+                      <ZTypography flag="label">
                         Placed on: {formatDate(order.date)}
                       </ZTypography>
                     </Box>
-                    <Box>{getStatusChip(order.status)}</Box>
+                    {getStatusChip(order.status)}
                   </Box>
 
                   {order.status !== "cancelled" && (
-                    <Box sx={{ mb: 2 }}>
-                      <ZTypography
-                        flag="subheading"
-                        variant="subtitle1"
-                        fontWeight={500}
-                      >
-                        <LocalShipping
-                          sx={{ verticalAlign: "middle", mr: 1 }}
-                        />
-                        {order.status === "delivered"
-                          ? "Delivered on: "
-                          : "Estimated Delivery: "}
-                        {formatDate(order.deliveryDate)}
-                      </ZTypography>
-                      {order.trackingNumber && (
-                        <ZTypography flag="value" variant="body2">
-                          Tracking #: {order.trackingNumber} ({order.carrier})
-                        </ZTypography>
-                      )}
-                    </Box>
+                    <ZTypography flag="subheading" sx={{ mb: 2 }}>
+                      <LocalShipping sx={{ mr: 1 }} />
+                      {order.status === "delivered"
+                        ? "Delivered on: "
+                        : "Estimated Delivery: "}
+                      {formatDate(order.deliveryDate)}
+                    </ZTypography>
                   )}
 
                   <Divider sx={{ my: 2 }} />
 
-                  <ZTypography
-                    flag="subheading"
-                    variant="subtitle2"
-                    gutterBottom
-                    fontWeight="bold"
-                  >
+                  <ZTypography flag="subheading" fontWeight="bold">
                     ORDER ITEMS
                   </ZTypography>
+
                   <TableContainer>
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>
-                            <ZTypography flag="label">Product</ZTypography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <ZTypography flag="label">Price</ZTypography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <ZTypography flag="label">Quantity</ZTypography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <ZTypography flag="label">Total</ZTypography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <ZTypography flag="label">Rating</ZTypography>
-                          </TableCell>
+                          <TableCell>Product</TableCell>
+                          <TableCell align="right">Price</TableCell>
+                          <TableCell align="right">Qty</TableCell>
+                          <TableCell align="right">Total</TableCell>
+                          <TableCell align="right">Rating</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -345,19 +313,13 @@ const Orders = () => {
                               </Box>
                             </TableCell>
                             <TableCell align="right">
-                              <ZTypography flag="value">
-                                ${product.price.toFixed(2)}
-                              </ZTypography>
+                              ${product.price.toFixed(2)}
                             </TableCell>
                             <TableCell align="right">
-                              <ZTypography flag="value">
-                                {product.quantity}
-                              </ZTypography>
+                              {product.quantity}
                             </TableCell>
                             <TableCell align="right">
-                              <ZTypography flag="value">
-                                ${(product.price * product.quantity).toFixed(2)}
-                              </ZTypography>
+                              ${(product.price * product.quantity).toFixed(2)}
                             </TableCell>
                             <TableCell align="right">
                               {product.rating ? (
@@ -405,22 +367,11 @@ const Orders = () => {
                       >
                         SHIPPING ADDRESS
                       </ZTypography>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
-                        <Home sx={{ mr: 1, color: "action.active" }} />
-                        <ZTypography flag="value">
-                          {order.shippingAddress.name}
-                        </ZTypography>
-                      </Box>
                       <ZTypography flag="value">
-                        {order.shippingAddress.address}
-                      </ZTypography>
-                      <ZTypography flag="value">
+                        {order.shippingAddress.name},{" "}
+                        {order.shippingAddress.address},{" "}
                         {order.shippingAddress.city},{" "}
-                        {order.shippingAddress.zip}
-                      </ZTypography>
-                      <ZTypography flag="value">
+                        {order.shippingAddress.zip},{" "}
                         {order.shippingAddress.country}
                       </ZTypography>
                     </Grid>
@@ -433,102 +384,27 @@ const Orders = () => {
                       >
                         PAYMENT INFORMATION
                       </ZTypography>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
-                        <Payment sx={{ mr: 1, color: "action.active" }} />
-                        <ZTypography flag="value">
-                          {order.paymentMethod}
-                        </ZTypography>
-                      </Box>
-                      <ZTypography
-                        flag="subheading"
-                        variant="subtitle2"
-                        gutterBottom
-                        fontWeight="bold"
-                        mt={2}
-                      >
-                        ORDER SUMMARY
+                      <ZTypography flag="value">
+                        {order.paymentMethod}
                       </ZTypography>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          mb: 1,
-                        }}
-                      >
-                        <ZTypography flag="label">Subtotal:</ZTypography>
-                        <ZTypography flag="value">
-                          ${(order.total - 5.99).toFixed(2)}
-                        </ZTypography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          mb: 1,
-                        }}
-                      >
-                        <ZTypography flag="label">Shipping:</ZTypography>
-                        <ZTypography flag="value">$5.99</ZTypography>
-                      </Box>
                       <Divider sx={{ my: 1 }} />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          mb: 1,
-                        }}
-                      >
-                        <ZTypography
-                          flag="subheading"
-                          variant="subtitle1"
-                          fontWeight="bold"
-                        >
-                          Total:
-                        </ZTypography>
-                        <ZTypography
-                          flag="subheading"
-                          variant="subtitle1"
-                          fontWeight="bold"
-                        >
-                          ${order.total.toFixed(2)}
-                        </ZTypography>
-                      </Box>
+                      <ZTypography flag="label">
+                        Total: ${order.total.toFixed(2)}
+                      </ZTypography>
                     </Grid>
                   </Grid>
                 </CardContent>
 
                 <CardActions
-                  sx={{ justifyContent: "flex-end", p: 2, bgcolor: "grey.50" }}
+                  sx={{ justifyContent: "flex-end", bgcolor: "grey.50" }}
                 >
                   {order.status === "processing" && (
                     <ZButton
                       variant="outlined"
                       color="error"
-                      startIcon={<Cancel />}
                       onClick={() => handleOpenCancelDialog(order)}
-                      sx={{ mr: 2 }}
                     >
                       <ZTypography flag="label">Cancel Order</ZTypography>
-                    </ZButton>
-                  )}
-                  {order.status === "shipped" && (
-                    <ZButton
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<LocalShipping />}
-                      onClick={() =>
-                        window.open(
-                          `https://www.${order.carrier.toLowerCase()}.com/tracking?tracknum=${
-                            order.trackingNumber
-                          }`,
-                          "_blank"
-                        )
-                      }
-                      sx={{ mr: 2 }}
-                    >
-                      <ZTypography flag="label">Track Package</ZTypography>
                     </ZButton>
                   )}
                   <ZButton
@@ -550,15 +426,10 @@ const Orders = () => {
         open={openCancelDialog}
         onClose={() => setOpenCancelDialog(false)}
       >
-        <DialogTitle>
-          <ZTypography flag="mainheader">Cancel Order</ZTypography>
-        </DialogTitle>
+        <DialogTitle>Cancel Order</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <ZTypography flag="value">
-              Are you sure you want to cancel order #{selectedOrder?.id}? This
-              action cannot be undone.
-            </ZTypography>
+            Are you sure you want to cancel order #{selectedOrder?.id}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

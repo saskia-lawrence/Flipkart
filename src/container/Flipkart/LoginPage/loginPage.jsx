@@ -350,7 +350,7 @@ class LoginPage extends Component {
                 type="email"
                 value={form.Email}
                 error={!!errors.Email && touched.Email}
-                helperText={touched.Email ? errors.Email : ""}
+                helperText={touched.Email ? errors.Email : " "}
                 onChange={(e) => this.handleChange("Email", e.target.value)}
               />
 
@@ -360,7 +360,7 @@ class LoginPage extends Component {
                 type="password"
                 value={form.Password}
                 error={!!errors.Password && touched.Password}
-                helperText={touched.Password ? errors.Password : ""}
+                helperText={touched.Password ? errors.Password : " "}
                 onChange={(e) => this.handleChange("Password", e.target.value)}
                 sx={{ mt: 2 }}
               />

@@ -1,6 +1,5 @@
-// OrderConfirmation.js
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
   Box,
@@ -15,13 +14,13 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import HomeIcon from "@mui/icons-material/Home";
-import { useNavigate } from "react-router-dom";
 import ZTypography from "../../../components/ZTyptography/ztyptography";
 
 const OrderConfirmation = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { products = [], shippingInfo = {}, paymentInfo = {} } = state || {};
+  const [createdOrder, setCreatedOrder] = useState(null);
 
   const calculateTotal = () => {
     return products.reduce(
@@ -54,11 +53,14 @@ const OrderConfirmation = () => {
         carrier: ["FedEx", "UPS", "USPS"][Math.floor(Math.random() * 3)],
       };
 
-      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-
-      const updatedOrders = [newOrder, ...existingOrders];
-
+      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+      const filteredOrders = existingOrders.filter(
+        (order) => order.id !== newOrder.id
+      );
+      const updatedOrders = [...filteredOrders, newOrder];
       localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+      setCreatedOrder(newOrder);
     }
   }, [state]);
 
@@ -77,6 +79,13 @@ const OrderConfirmation = () => {
           <ZTypography flag="mainheader" variant="h4" gutterBottom>
             Order Placed Successfully!
           </ZTypography>
+
+          {createdOrder?.id && (
+            <ZTypography flag="subheading" variant="body1" sx={{ mb: 2 }}>
+              Order Number: <strong>{createdOrder.id}</strong>
+            </ZTypography>
+          )}
+
           <ZTypography flag="subheading" variant="body1">
             Thank you for your purchase
           </ZTypography>
@@ -173,7 +182,11 @@ const OrderConfirmation = () => {
           <Button
             variant="outlined"
             startIcon={<ShoppingCartCheckoutIcon />}
-            onClick={() => navigate("/orders")}
+            onClick={() =>
+              navigate("/orders", {
+                state: { newOrderId: createdOrder?.id },
+              })
+            }
             sx={{ px: 4 }}
           >
             <ZTypography flag="label">View Order History</ZTypography>

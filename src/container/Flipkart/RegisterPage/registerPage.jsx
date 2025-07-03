@@ -321,7 +321,7 @@ class RegisterPage extends React.Component {
                   !!this.state.errors.Username && this.state.touched.Username
                 }
                 helperText={
-                  this.state.touched.Username ? this.state.errors.Username : ""
+                  this.state.touched.Username ? this.state.errors.Username : " "
                 }
                 onChange={(e) => this.handleChange("Username", e.target.value)}
                 sx={{ mb: 2 }}
@@ -339,7 +339,7 @@ class RegisterPage extends React.Component {
                 value={this.state.Mobile}
                 error={!!this.state.errors.Mobile && this.state.touched.Mobile}
                 helperText={
-                  this.state.touched.Mobile ? this.state.errors.Mobile : ""
+                  this.state.touched.Mobile ? this.state.errors.Mobile : " "
                 }
                 onChange={(e) => this.handleChange("Mobile", e.target.value)}
                 sx={{ mb: 2 }}
@@ -357,7 +357,7 @@ class RegisterPage extends React.Component {
                 value={this.state.Email}
                 error={!!this.state.errors.Email && this.state.touched.Email}
                 helperText={
-                  this.state.touched.Email ? this.state.errors.Email : ""
+                  this.state.touched.Email ? this.state.errors.Email : " "
                 }
                 onChange={(e) => this.handleChange("Email", e.target.value)}
                 sx={{ mb: 2 }}
@@ -376,7 +376,7 @@ class RegisterPage extends React.Component {
                   !!this.state.errors.Password && this.state.touched.Password
                 }
                 helperText={
-                  this.state.touched.Password ? this.state.errors.Password : ""
+                  this.state.touched.Password ? this.state.errors.Password : " "
                 }
                 value={this.state.Password}
                 onChange={(e) => this.handleChange("Password", e.target.value)}
@@ -399,7 +399,7 @@ class RegisterPage extends React.Component {
                 helperText={
                   this.state.touched.ConfirmPassword
                     ? this.state.errors.ConfirmPassword
-                    : ""
+                    : " "
                 }
                 value={this.state.ConfirmPassword}
                 onChange={(e) =>

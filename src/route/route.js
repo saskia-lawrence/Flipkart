@@ -18,6 +18,7 @@ import Homeliving from "../container/Flipkart/HomeLiving/homeliving";
 import Beautyproduct from "../container/Flipkart/BeautyProduct/beautyproduct";
 import Food from "../container/Flipkart/Food/food";
 import Techgadgets from "../container/Flipkart/TechGadgets/techgadgets";
+import Products from "../container/Flipkart/Product/product";
 
 function Routing() {
   return (
@@ -31,6 +32,7 @@ function Routing() {
         <Route element={<PageLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/womens" element={<WomensFashion />} />
           <Route path="/mens" element={<MensFashion />} />
