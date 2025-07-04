@@ -35,8 +35,22 @@ const OrderConfirmation = () => {
 
   useEffect(() => {
     if (state && state.products && state.products.length > 0) {
+      // Check if we've already created an order for this cart
+      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+      const existingOrder = existingOrders.find(
+        (order) =>
+          JSON.stringify(order.products) === JSON.stringify(state.products) &&
+          order.total === calculateTotal()
+      );
+
+      if (existingOrder) {
+        setCreatedOrder(existingOrder);
+        return;
+      }
+
+      // Only create new order if one doesn't already exist
       const newOrder = {
-        id: `ORD-${Math.floor(Math.random() * 1000000)}`,
+        id: `ORD-${Date.now()}`, // More reliable than random number
         date: new Date().toISOString(),
         products: state.products,
         status: "processing",
@@ -53,13 +67,8 @@ const OrderConfirmation = () => {
         carrier: ["FedEx", "UPS", "USPS"][Math.floor(Math.random() * 3)],
       };
 
-      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-      const filteredOrders = existingOrders.filter(
-        (order) => order.id !== newOrder.id
-      );
-      const updatedOrders = [...filteredOrders, newOrder];
+      const updatedOrders = [...existingOrders, newOrder];
       localStorage.setItem("orders", JSON.stringify(updatedOrders));
-
       setCreatedOrder(newOrder);
     }
   }, [state]);
