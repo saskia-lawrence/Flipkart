@@ -7,6 +7,8 @@ const { Boom } = require("@hapi/boom");
 const express = require("express");
 const cors = require("cors");
 const qrcode = require("qrcode");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const PORT = 5000;
@@ -79,7 +81,6 @@ app.get("/qr", (req, res) => {
 app.get("/status", (req, res) => {
   res.json({ connected: !!sock?.user?.id });
 });
-
 app.post("/send-message", async (req, res) => {
   let { number, message } = req.body;
 
@@ -99,7 +100,6 @@ app.post("/send-message", async (req, res) => {
   // ✅ Clean number: remove +, spaces, dashes etc.
   number = number.replace(/[^0-9]/g, "");
 
-  // ✅ Ensure it starts with '91'
   if (!number.startsWith("91")) {
     return res.status(400).json({
       success: false,
@@ -119,12 +119,31 @@ app.post("/send-message", async (req, res) => {
       });
     }
 
-    // ✅ Step 2: Use the actual JID from WhatsApp
-    await sock.sendMessage(result.jid, { text: message });
+    const finalJid = result.jid;
+
+    // ✅ Step 2: Load local image buffer
+    const imagePath = path.join(__dirname, "assets", "cart1.jpg");
+
+    let imageContent;
+    try {
+      const imageBuffer = fs.readFileSync(imagePath);
+      imageContent = imageBuffer;
+    } catch (e) {
+      console.warn("⚠️ Local image not found, using fallback image URL.");
+      imageContent = {
+        url: "https://images.unsplash.com/photo-1580894894510-399f66e2c8b2",
+      };
+    }
+
+    // ✅ Step 3: Send image with caption (message)
+    await sock.sendMessage(finalJid, {
+      image: imageContent,
+      caption: message || "🛒 Welcome to ZoiCart! Here’s our latest offer!",
+    });
 
     res.json({
       success: true,
-      message: `Message sent to ${result.jid}`,
+      message: `🖼️ Image message sent to ${finalJid}`,
     });
   } catch (err) {
     console.error("❌ Error sending message:", err);

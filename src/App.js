@@ -14,9 +14,9 @@ function App() {
   const [response, setResponse] = useState("");
 
   const sendMessage = async () => {
-    const res = await fetch("http://localhost:5000/status");
-    const data = await res.json();
-    if (!data.connected) return alert("WhatsApp not connected yet");
+    // const resp = await fetch("http://localhost:5000/status");
+    // const data = await resp.json();
+    // if (!data.connected) return alert("WhatsApp not connected yet");
 
     try {
       const res = await fetch("http://localhost:5000/send-message", {
