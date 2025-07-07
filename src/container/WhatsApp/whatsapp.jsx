@@ -1,13 +1,21 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const WhatsApp = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
+function WhatsApp() {
+  const [number, setNumber] = useState("");
   const [message, setMessage] = useState("");
+  const [status, setStatus] = useState("");
 
-  const handleSendMessage = () => {
-    if (!phoneNumber || !message) {
-      alert("Please enter both phone number and message.");
-      return;
+  const handleSend = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/send", {
+        number,
+        message,
+      });
+      setStatus(res.data.status);
+    } catch (error) {
+      console.error(error);
+      setStatus("❌ Failed to send message");
     }
 
     // Remove spaces or special characters from phone number
@@ -20,41 +28,28 @@ const WhatsApp = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "400px", margin: "auto" }}>
-      <h2>Send WhatsApp Message</h2>
-
+    <div style={{ maxWidth: 500, margin: "40px auto", textAlign: "center" }}>
+      <h2>📲 WhatsApp Message Sender</h2>
       <input
         type="text"
-        placeholder="Phone Number (e.g. 919876543210)"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+        placeholder="Enter phone number with country code"
+        value={number}
+        onChange={(e) => setNumber(e.target.value)}
+        style={{ width: "100%", padding: "10px", margin: "10px 0" }}
       />
-
       <textarea
-        placeholder="Type your message here..."
+        placeholder="Enter message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         rows={4}
-        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
-
-      <button
-        onClick={handleSendMessage}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#25D366",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          fontSize: "16px",
-          cursor: "pointer",
-        }}
-      >
-        📤 Send via WhatsApp
+      <button onClick={handleSend} style={{ padding: "10px 20px" }}>
+        Send Message
       </button>
+      {status && <p style={{ marginTop: "15px" }}>{status}</p>}
     </div>
   );
-};
+}
 
 export default WhatsApp;
