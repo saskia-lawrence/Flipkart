@@ -16,7 +16,7 @@ const WhatsApp = () => {
 
     const waUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
 
-    window.open(waUrl, "_blank"); // Opens WhatsApp in a new tab
+    window.open(waUrl, "_blank");
   };
 
   return (
