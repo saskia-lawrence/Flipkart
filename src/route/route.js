@@ -19,12 +19,14 @@ import Beautyproduct from "../container/Flipkart/BeautyProduct/beautyproduct";
 import Food from "../container/Flipkart/Food/food";
 import Techgadgets from "../container/Flipkart/TechGadgets/techgadgets";
 import Products from "../container/Flipkart/Product/product";
+import WhatsApp from "../container/WhatsApp/whatsapp";
 
 function Routing() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* <Route path="/" element={<LoginPage />} /> */}
+        <Route path="/" element={<WhatsApp />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/otpverification" element={<OtpVerification />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
