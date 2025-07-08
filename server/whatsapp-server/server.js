@@ -122,7 +122,7 @@ app.post("/send-message", async (req, res) => {
     const finalJid = result.jid;
 
     // ✅ Step 2: Load local image buffer
-    const imagePath = path.join(__dirname, "assets", "cart1.jpg");
+    const imagePath = path.join(__dirname, "assets", "zoicart.jpg");
 
     let imageContent;
     try {
