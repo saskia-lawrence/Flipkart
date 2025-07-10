@@ -36,8 +36,8 @@ const Payment = () => {
   const [error, setError] = useState(null);
 
   const [shippingInfo, setShippingInfo] = useState({
-    firstName: "",
-    lastName: "",
+    Name: "",
+    MobileNo: "",
     address: "",
     city: "",
     state: "",
@@ -138,13 +138,16 @@ const Payment = () => {
     const newErrors = {};
     let isValid = true;
 
-    if (!shippingInfo.firstName.trim()) {
-      newErrors.firstName = "First name is required";
+    if (!shippingInfo.Name.trim()) {
+      newErrors.Name = "name is required";
       isValid = false;
     }
 
-    if (!shippingInfo.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
+    if (!shippingInfo.MobileNo.trim()) {
+      newErrors.MobileNo = "MobileNo is required";
+      isValid = false;
+    } else if (!/^91\d{10}$/.test(shippingInfo.MobileNo)) {
+      newErrors.MobileNo = "Enter valid Indian number starting with 91";
       isValid = false;
     }
 
@@ -294,14 +297,57 @@ const Payment = () => {
         timestamp: new Date().toISOString(),
       };
 
-      navigate("/orderconfirmation", {
-        state: orderData,
+      const validNumber = shippingInfo.MobileNo.startsWith(91)
+        ? shippingInfo.MobileNo
+        : `91${shippingInfo.MobileNo}`;
+
+      // ✅ First message: text summary
+      await fetch("http://localhost:5000/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          number: validNumber,
+          message: `🛒 Order Summary from ZoiCart:\n\n${products
+            .map(
+              (item, idx) =>
+                `${idx + 1}. ${item.name} x${item.quantity} - $${(
+                  item.price * item.quantity
+                ).toFixed(2)}`
+            )
+            .join("\n")}\n\n🧾 Total: $${calculateTotal().toFixed(2)}`,
+        }),
       });
+
+      const baseURL =
+        process.env.REACT_APP_IMAGE_BASE_URL || "http://localhost:3000";
+      // ✅ Second: loop over and send each image
+      for (const product of products) {
+        if (product.image) {
+          console.log(`${baseURL}${product.image}`, "sam");
+
+          await fetch("http://localhost:5000/send-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              number: validNumber,
+              imageUrl: `${baseURL}${product.image}`,
+              caption: `${product.name} (x${product.quantity})
+   Price: $${(product.price * product.quantity).toFixed(2)}
+${product.description ? `Description: ${product.description}` : ""}
+${product.category ? `Category: ${product.category}` : ""}`,
+            }),
+          });
+        }
+      }
+
+      navigate("/orderconfirmation", { state: orderData });
     } catch (err) {
       setError(err.message || "Failed to place order");
       console.error("Order error:", err);
     }
   };
+
+  console.log(products, "saskia");
 
   const getStepContent = (step) => {
     switch (step) {
@@ -312,30 +358,33 @@ const Payment = () => {
               Order Summary
             </ZTypography>
             <List>
-              {products.map((item) => (
-                <ListItem key={item.id || Math.random()} divider>
-                  <ListItemAvatar>
-                    <Avatar
-                      src={item.image}
-                      alt={item.name}
-                      sx={{ width: 56, height: 56, mr: 2 }}
-                      variant="rounded"
-                    />
-                  </ListItemAvatar>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    width="100%"
-                  >
-                    <ZTypography flag="value">
-                      {item.name || "Product"} (x{item.quantity || 1})
-                    </ZTypography>
-                    <ZTypography flag="value">
-                      ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
-                    </ZTypography>
-                  </Box>
-                </ListItem>
-              ))}
+              {products.map((item) => {
+                console.log(products, "maping");
+                return (
+                  <ListItem key={item.id || Math.random()} divider>
+                    <ListItemAvatar>
+                      <Avatar
+                        src={item.image}
+                        alt={item.name}
+                        sx={{ width: 56, height: 56, mr: 2 }}
+                        variant="rounded"
+                      />
+                    </ListItemAvatar>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      width="100%"
+                    >
+                      <ZTypography flag="value">
+                        {item.name || "Product"} (x{item.quantity || 1})
+                      </ZTypography>
+                      <ZTypography flag="value">
+                        ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                      </ZTypography>
+                    </Box>
+                  </ListItem>
+                );
+              })}
             </List>
             <Divider sx={{ my: 2 }} />
             <ZTypography flag="subheading" variant="h6" textAlign="right">
@@ -352,23 +401,23 @@ const Payment = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <ZTextField
-                  label={<ZTypography flag="label">First Name</ZTypography>}
-                  name="firstName"
-                  value={shippingInfo.firstName}
+                  label={<ZTypography flag="label">Name</ZTypography>}
+                  name="Name"
+                  value={shippingInfo.Name}
                   onChange={handleShippingChange}
-                  error={!!errors.shipping.firstName}
-                  helperText={errors.shipping.firstName}
+                  error={!!errors.shipping.Name}
+                  helperText={errors.shipping.Name}
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <ZTextField
-                  label={<ZTypography flag="label">Last Name</ZTypography>}
-                  name="lastName"
-                  value={shippingInfo.lastName}
+                  label={<ZTypography flag="label">Mobile Number</ZTypography>}
+                  name="MobileNo"
+                  value={shippingInfo.MobileNo}
                   onChange={handleShippingChange}
-                  error={!!errors.shipping.lastName}
-                  helperText={errors.shipping.lastName}
+                  error={!!errors.shipping.MobileNo}
+                  helperText={errors.shipping.MobileNo}
                   fullWidth
                 />
               </Grid>

@@ -25,8 +25,8 @@ function Routing() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<LoginPage />} /> */}
-        <Route path="/" element={<WhatsApp />} />
+        <Route path="/" element={<LoginPage />} />
+        {/* <Route path="/" element={<WhatsApp />} /> */}
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/otpverification" element={<OtpVerification />} />
         <Route path="/resetpassword" element={<ResetPassword />} />

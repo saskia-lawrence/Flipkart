@@ -1,53 +1,68 @@
+
 import React, { useState } from "react";
-import axios from "axios";
 
 function WhatsApp() {
   const [number, setNumber] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
+  const [response, setResponse] = useState("");
 
-  const handleSend = async () => {
+  const sendMessage = async () => {
+    // const resp = await fetch("http://localhost:5000/status");
+    // const data = await resp.json();
+    // if (!data.connected) return alert("WhatsApp not connected yet");
+
     try {
-      const res = await axios.post("http://localhost:8000/send", {
-        number,
-        message,
+      const res = await fetch("http://localhost:5000/send-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number, message }),
       });
-      setStatus(res.data.status);
-    } catch (error) {
-      console.error(error);
-      setStatus("❌ Failed to send message");
+
+      const data = await res.json();
+      setResponse(JSON.stringify(data, null, 2));
+
+      // ✅ Clear fields after success
+      setNumber("");
+      setMessage("");
+      setTimeout(() => setResponse(""), 3000); 
+    } catch (err) {
+      console.error("Message send failed", err);
+      setResponse("❌ Failed to send message. Backend might not be running.");
+
+      // ❌ Clear fields only on failure if you want
+      setTimeout(() => setResponse(""), 3000);
     }
-
-    // Remove spaces or special characters from phone number
-    const formattedPhone = phoneNumber.replace(/[^\d]/g, "");
-    const encodedMessage = encodeURIComponent(message);
-
-    const waUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
-
-    window.open(waUrl, "_blank");
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: "40px auto", textAlign: "center" }}>
-      <h2>📲 WhatsApp Message Sender</h2>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+      <h1>📤 Send WhatsApp Message</h1>
+
       <input
         type="text"
-        placeholder="Enter phone number with country code"
+        placeholder="Phone Number e.g. 919999999999"
         value={number}
         onChange={(e) => setNumber(e.target.value)}
-        style={{ width: "100%", padding: "10px", margin: "10px 0" }}
+        style={{ width: 300, marginBottom: 10 }}
       />
+      <br />
+
       <textarea
-        placeholder="Enter message"
+        placeholder="Your Message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        rows={4}
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        style={{ width: 300, height: 100 }}
       />
-      <button onClick={handleSend} style={{ padding: "10px 20px" }}>
-        Send Message
-      </button>
-      {status && <p style={{ marginTop: "15px" }}>{status}</p>}
+      <br />
+
+      <button onClick={sendMessage}>Send Message</button>
+
+      {response && (
+        <div style={{ marginTop: 20 }}>
+          <strong>Response:</strong>
+          <pre>{response}</pre>
+        </div>
+      )}
     </div>
   );
 }
