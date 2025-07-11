@@ -212,13 +212,13 @@ const cors = require("cors");
 const qrcode = require("qrcode");
 const path = require("path");
 const fs = require("fs");
-const axios = require("axios");
 
 const app = express();
 const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
+const router = express.Router();
 
 let sock;
 let qrCodeBase64 = "";
@@ -314,12 +314,10 @@ app.post("/send-message", async (req, res) => {
   try {
     const [result] = await sock.onWhatsApp(jid);
     if (!result?.exists) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          error: "Number is not registered on WhatsApp",
-        });
+      return res.status(404).json({
+        success: false,
+        error: "Number is not registered on WhatsApp",
+      });
     }
 
     const finalJid = result.jid;
@@ -378,7 +376,6 @@ router.post("/send-image", async (req, res) => {
     res.status(500).send({ error: "Failed to send image" });
   }
 });
-
 
 // Send multiple images
 app.post("/send-multiple-images", async (req, res) => {
