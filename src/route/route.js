@@ -19,7 +19,8 @@ import Beautyproduct from "../container/Flipkart/BeautyProduct/beautyproduct";
 import Food from "../container/Flipkart/Food/food";
 import Techgadgets from "../container/Flipkart/TechGadgets/techgadgets";
 import Products from "../container/Flipkart/Product/product";
-import WhatsApp from "../container/WhatsApp/whatsapp";
+// import WhatsApp from "../container/WhatsApp/whatsapp";
+import EmailList from "../container/Flipkart/EmailList/emailList";
 
 function Routing() {
   return (
@@ -33,6 +34,7 @@ function Routing() {
 
         <Route element={<PageLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/email" element={<EmailList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/products" element={<Products />} />
           <Route path="/payment" element={<Payment />} />

@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Email } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
 import {
   AppBar,
@@ -278,6 +279,14 @@ class PageLayout extends React.Component {
             <IconButton color="inherit">
               <Badge badgeContent={notifications.length} color="error">
                 <Notifications />
+              </Badge>
+            </IconButton>
+            <IconButton
+              color="inherit"
+              onClick={() => this.props.navigate("/email")}
+            >
+              <Badge color="secondary">
+                <Email />
               </Badge>
             </IconButton>
             <IconButton
