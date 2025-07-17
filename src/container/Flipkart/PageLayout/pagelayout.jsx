@@ -96,7 +96,7 @@ class PageLayout extends React.Component {
       cartCount: 0,
       user: {
         name: props.location?.state?.user?.username || "Guest",
-        email: props.location?.state?.user?.email || "",
+        email: props.location?.state?.user?.email || "",  
         mobile: props.location?.state?.user?.mobile || "",
         avatar: props.location?.state?.user?.avatar || "",
         role: props.location?.state?.user?.role || "User",

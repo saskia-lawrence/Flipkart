@@ -23,13 +23,21 @@ export default function EmailList() {
     }
   };
 
+  function stripHtmlTags(html) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
+
   useEffect(() => {
     fetchEmails();
   }, []);
 
   return (
     <div className="email-wrapper">
-      <button className="sync-btn" onClick={syncEmails}>📥 Sync Emails</button>
+      <button className="sync-btn" onClick={syncEmails}>
+        📥 Sync Emails
+      </button>
       <div className="email-header-row">
         <input type="checkbox" />
         <span className="email-header-title">Primary</span>
@@ -43,16 +51,18 @@ export default function EmailList() {
             <span className="email-content">
               <span className="subject">{email.subject}</span> -{" "}
               <span className="body-snippet">
-                {email.body.length > 80
-                  ? email.body.slice(0, 80) + "..."
-                  : email.body}
+                {stripHtmlTags(email.body).length > 80
+                  ? stripHtmlTags(email.body).slice(0, 80) + "..."
+                  : stripHtmlTags(email.body)}
               </span>
             </span>
             <span className="timestamp">
-              {new Date(email.receivedAt).toLocaleDateString(undefined, {
-                month: "short",
-                day: "numeric",
-              })}
+              {email.receivedAt
+                ? new Date(email.receivedAt).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                  })
+                : "—"}
             </span>
           </li>
         ))}
